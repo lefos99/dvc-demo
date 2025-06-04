@@ -1,0 +1,114 @@
+schema: '2.0'
+stages:
+  split_data:
+    cmd: python dvc_demo/code/split_data.py --input dvc_demo/data/data.csv --output
+      dvc_demo/data/processed --test-size 0.2 --random-state 42
+    deps:
+    - path: dvc_demo/code/split_data.py
+      hash: md5
+      md5: 23a5694bc381f2d638f037e0f1ee8471
+      size: 2780
+    - path: dvc_demo/data/data.csv
+      hash: md5
+      md5: 70f12792efd000ff63af51964d593ef2
+      size: 124579
+    outs:
+    - path: dvc_demo/data/processed/test.csv
+      hash: md5
+      md5: c7b5fd9e5ae7d394136d8483fed8038a
+      size: 25535
+    - path: dvc_demo/data/processed/train.csv
+      hash: md5
+      md5: 17dbd85c2968d2f9c066b4605e337bf6
+      size: 100524
+  data_statistics:
+    cmd: python dvc_demo/code/data_statistics.py --train dvc_demo/data/processed/train.csv
+      --output dvc_demo/reports/statistics
+    deps:
+    - path: dvc_demo/code/data_statistics.py
+      hash: md5
+      md5: eff8f139da1e40a82fcfbef6f3844c32
+      size: 6132
+    - path: dvc_demo/data/processed/train.csv
+      hash: md5
+      md5: 17dbd85c2968d2f9c066b4605e337bf6
+      size: 100524
+    outs:
+    - path: dvc_demo/reports/statistics/class_distribution.png
+      hash: md5
+      md5: fcd515d4cc20b3fce172b3662d70e246
+      size: 104154
+    - path: dvc_demo/reports/statistics/correlation_heatmap.png
+      hash: md5
+      md5: 7df3c572834739d2bc60e9b8108819a9
+      size: 619067
+    - path: dvc_demo/reports/statistics/feature_distributions.png
+      hash: md5
+      md5: 6f7dd07bc94b910e38af8e7ba6bf4d74
+      size: 498759
+    - path: dvc_demo/reports/statistics/feature_variance.png
+      hash: md5
+      md5: 09d757e6612afe657f57a417cdd4417a
+      size: 216198
+    - path: dvc_demo/reports/statistics/pairplot_key_features.png
+      hash: md5
+      md5: 94c72aaff4817be94eef45fbd0876622
+      size: 1399391
+    - path: dvc_demo/reports/statistics/statistics.json
+      hash: md5
+      md5: d58eb9ca52e67b2be45d72f541cf6579
+      size: 7198
+    - path: dvc_demo/reports/statistics/summary_statistics.csv
+      hash: md5
+      md5: e27cdf1706405f92fba89fe28e30e2cd
+      size: 1897
+  train_model:
+    cmd: python dvc_demo/code/train_model.py --train dvc_demo/data/processed/train.csv
+      --test dvc_demo/data/processed/test.csv --output dvc_demo/models --n-estimators
+      100 --random-state 42
+    deps:
+    - path: dvc_demo/code/train_model.py
+      hash: md5
+      md5: 986ad8f50c9ba90ffb5ebee25df61f08
+      size: 8780
+    - path: dvc_demo/data/processed/test.csv
+      hash: md5
+      md5: c7b5fd9e5ae7d394136d8483fed8038a
+      size: 25535
+    - path: dvc_demo/data/processed/train.csv
+      hash: md5
+      md5: 17dbd85c2968d2f9c066b4605e337bf6
+      size: 100524
+    outs:
+    - path: dvc_demo/models/confusion_matrix.png
+      hash: md5
+      md5: bbbce25378789791c37e03907b255145
+      size: 72703
+    - path: dvc_demo/models/feature_importance.csv
+      hash: md5
+      md5: 4c2ac551c5613bce202e853b326d496e
+      size: 1094
+    - path: dvc_demo/models/feature_importance.png
+      hash: md5
+      md5: 650c122cfd50800b2699b8468dcbdf0e
+      size: 222575
+    - path: dvc_demo/models/metrics.json
+      hash: md5
+      md5: f052b419ec447ee5fd26cb31ad5a8420
+      size: 294
+    - path: dvc_demo/models/prediction_analysis.png
+      hash: md5
+      md5: 89ce95884db0edb97ebe497136d5ebc1
+      size: 118413
+    - path: dvc_demo/models/random_forest_model.joblib
+      hash: md5
+      md5: 7c97f223a40ed4dcef90bcfeae02332d
+      size: 326377
+    - path: dvc_demo/models/roc_curve.png
+      hash: md5
+      md5: 15b2dac4df21208de5badf086024db1c
+      size: 130948
+    - path: dvc_demo/models/scaler.joblib
+      hash: md5
+      md5: fa891da44b3e8949834ec6d4e61c8ae3
+      size: 2087
