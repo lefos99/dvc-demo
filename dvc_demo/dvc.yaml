@@ -17,25 +17,29 @@ stages:
     - data/processed/test.csv
 
   compute_data_statistics:
-    cmd: >-
-      python code/data_statistics.py 
-      --train data/processed/train.csv 
-      --output data/reports/statistics
-    deps:
-    - data/processed/train.csv
-    - code/data_statistics.py
-    params:
-    - data_statistics.important_features
-    - data_statistics.pairplot_features
-    - data_statistics.top_variance_features
-    outs:
-    - data/reports/statistics/statistics.json
-    - data/reports/statistics/class_distribution.png
-    - data/reports/statistics/correlation_heatmap.png
-    - data/reports/statistics/feature_distributions.png
-    - data/reports/statistics/pairplot_key_features.png
-    - data/reports/statistics/feature_variance.png
-    - data/reports/statistics/summary_statistics.csv
+    foreach:
+      - train
+      - test
+    do:
+      cmd: >-
+        python code/data_statistics.py 
+        --train data/processed/${item}.csv 
+        --output data/reports/statistics/${item}
+      deps:
+      - data/processed/${item}.csv
+      - code/data_statistics.py
+      params:
+      - data_statistics.important_features
+      - data_statistics.pairplot_features
+      - data_statistics.top_variance_features
+      outs:
+      - data/reports/statistics/${item}/statistics.json
+      - data/reports/statistics/${item}/class_distribution.png
+      - data/reports/statistics/${item}/correlation_heatmap.png
+      - data/reports/statistics/${item}/feature_distributions.png
+      - data/reports/statistics/${item}/pairplot_key_features.png
+      - data/reports/statistics/${item}/feature_variance.png
+      - data/reports/statistics/${item}/summary_statistics.csv
 
   train_model:
     cmd: >-

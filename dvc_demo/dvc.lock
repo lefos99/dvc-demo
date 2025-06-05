@@ -25,9 +25,9 @@ stages:
       hash: md5
       md5: 12b24aa87cd748c7f2dbac58444e2181
       size: 100516
-  compute_data_statistics:
+  compute_data_statistics@train:
     cmd: python code/data_statistics.py  --train data/processed/train.csv  --output
-      data/reports/statistics
+      data/reports/statistics/train
     deps:
     - path: code/data_statistics.py
       hash: md5
@@ -57,34 +57,94 @@ stages:
         - area_mean
         data_statistics.top_variance_features: 20
     outs:
-    - path: data/reports/statistics/class_distribution.png
+    - path: data/reports/statistics/train/class_distribution.png
       hash: md5
       md5: fcd515d4cc20b3fce172b3662d70e246
       size: 104154
-    - path: data/reports/statistics/correlation_heatmap.png
+    - path: data/reports/statistics/train/correlation_heatmap.png
       hash: md5
       md5: 7df3c572834739d2bc60e9b8108819a9
       size: 619067
-    - path: data/reports/statistics/feature_distributions.png
+    - path: data/reports/statistics/train/feature_distributions.png
       hash: md5
       md5: 6f7dd07bc94b910e38af8e7ba6bf4d74
       size: 498759
-    - path: data/reports/statistics/feature_variance.png
+    - path: data/reports/statistics/train/feature_variance.png
       hash: md5
       md5: 09d757e6612afe657f57a417cdd4417a
       size: 216198
-    - path: data/reports/statistics/pairplot_key_features.png
+    - path: data/reports/statistics/train/pairplot_key_features.png
       hash: md5
       md5: 94c72aaff4817be94eef45fbd0876622
       size: 1399391
-    - path: data/reports/statistics/statistics.json
+    - path: data/reports/statistics/train/statistics.json
       hash: md5
       md5: 43024da4475ab5971f825bdd2312479b
       size: 7654
-    - path: data/reports/statistics/summary_statistics.csv
+    - path: data/reports/statistics/train/summary_statistics.csv
       hash: md5
       md5: e27cdf1706405f92fba89fe28e30e2cd
       size: 1897
+  compute_data_statistics@test:
+    cmd: python code/data_statistics.py  --train data/processed/test.csv  --output
+      data/reports/statistics/test
+    deps:
+    - path: code/data_statistics.py
+      hash: md5
+      md5: d2b4f8a6b05d093e8de381b55a679db6
+      size: 8728
+    - path: data/processed/test.csv
+      hash: md5
+      md5: d5817f45d1fdcf02bf623853576b561d
+      size: 25527
+    params:
+      params.yaml:
+        data_statistics.important_features:
+        - radius_mean
+        - texture_mean
+        - perimeter_mean
+        - area_mean
+        - smoothness_mean
+        - compactness_mean
+        - concavity_mean
+        - concave points_mean
+        - symmetry_mean
+        - fractal_dimension_mean
+        data_statistics.pairplot_features:
+        - radius_mean
+        - texture_mean
+        - perimeter_mean
+        - area_mean
+        data_statistics.top_variance_features: 20
+    outs:
+    - path: data/reports/statistics/test/class_distribution.png
+      hash: md5
+      md5: 71c710a354031fb1fba3a8e8e691ad0f
+      size: 108049
+    - path: data/reports/statistics/test/correlation_heatmap.png
+      hash: md5
+      md5: f9dcf8ddc401e47b8cc6607f09bf52fe
+      size: 619159
+    - path: data/reports/statistics/test/feature_distributions.png
+      hash: md5
+      md5: 35a4a64e202c9a4f6fb4ec568010815f
+      size: 466468
+    - path: data/reports/statistics/test/feature_variance.png
+      hash: md5
+      md5: 68488905ccccfdd41ce84a5a8fd5da59
+      size: 214742
+    - path: data/reports/statistics/test/pairplot_key_features.png
+      hash: md5
+      md5: be56e35cb77568e534cb599080277c31
+      size: 949898
+    - path: data/reports/statistics/test/statistics.json
+      hash: md5
+      md5: ce74781523ee0e334fec77ba08c4bb3f
+      size: 7779
+    - path: data/reports/statistics/test/summary_statistics.csv
+      hash: md5
+      md5: 939a825f209e6bad35508e5e8e0792bd
+      size: 1895
   train_model:
     cmd: python code/train_model.py  --train data/processed/train.csv  --test data/processed/test.csv  --output
       data/models  --n-estimators 100  --max-depth None --min-samples-split 2 --min-samples-leaf
