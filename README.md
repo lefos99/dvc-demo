@@ -64,7 +64,6 @@ dvc-demo/
   - `random_forest_model.joblib`: Trained model
   - `scaler.joblib`: Feature scaler
   - `metrics.json`: Performance metrics
-  - `classification_report.json`: Detailed classification metrics
   - `feature_importance.csv`: Feature importance rankings
   - `confusion_matrix.png`: Confusion matrix visualization
   - `roc_curve.png`: ROC curve analysis

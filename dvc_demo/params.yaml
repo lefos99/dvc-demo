@@ -29,7 +29,7 @@ data_statistics:
 train_model:
   # Random Forest hyperparameters
   n_estimators: 10         # Number of trees in the forest
-  max_depth: 2             # Maximum depth of trees (null for unlimited)
+  max_depth: 3             # Maximum depth of trees (null for unlimited)
   min_samples_split: 2     # Minimum samples required to split an internal node
   min_samples_leaf: 1      # Minimum samples required to be at a leaf node
   max_features: "sqrt"     # Number of features to consider for best split

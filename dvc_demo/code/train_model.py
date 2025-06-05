@@ -170,12 +170,6 @@ def train_model(train_path, test_path, output_dir, n_estimators=100, max_depth=N
     print(f"  Test F1-Score: {metrics['test_f1']:.4f}")
     print(f"  Test ROC-AUC: {metrics['test_roc_auc']:.4f}")
     
-    # Generate detailed classification report
-    class_report = classification_report(y_test, y_test_pred, output_dict=True)
-    class_report_path = os.path.join(output_dir, 'classification_report.json')
-    with open(class_report_path, 'w') as f:
-        json.dump(class_report, f, indent=2)
-    
     # Print classification report
     print("\nClassification Report:")
     print(classification_report(y_test, y_test_pred))
@@ -281,7 +275,6 @@ def train_model(train_path, test_path, output_dir, n_estimators=100, max_depth=N
     if use_feature_scaling:
         print(f"  - scaler.joblib")
     print(f"  - metrics.json")
-    print(f"  - classification_report.json")
     print(f"  - feature_importance.csv")
     print(f"  - confusion_matrix.png")
     print(f"  - roc_curve.png")

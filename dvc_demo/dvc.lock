@@ -163,7 +163,7 @@ stages:
     params:
       params.yaml:
         train_model.bootstrap: true
-        train_model.max_depth: 2
+        train_model.max_depth: 3
         train_model.max_features: sqrt
         train_model.min_samples_leaf: 1
         train_model.min_samples_split: 2
@@ -176,32 +176,32 @@ stages:
     outs:
     - path: data/models/confusion_matrix.png
       hash: md5
-      md5: f64b2757f078073ecfe7f7fd724fb572
-      size: 72085
+      md5: ee80b37d336be8e888ed67be55611151
+      size: 71717
     - path: data/models/feature_importance.csv
       hash: md5
-      md5: 57275c94c128ca56a4be03f1e6f3368c
-      size: 869
+      md5: a59a145d73edd3b2817e074571f92dfe
+      size: 975
     - path: data/models/feature_importance.png
       hash: md5
-      md5: 9b1e6ab435460bef64ecc1a1d1fea36f
-      size: 224543
+      md5: 99a5f06978ad2d8aaa19fb95088822a1
+      size: 224307
     - path: data/models/metrics.json
       hash: md5
-      md5: 15fb21a8c73b105797be4818aa1931b8
-      size: 485
+      md5: 0c8cd24cbb8c07ff8220b0f23f649bde
+      size: 483
     - path: data/models/prediction_analysis.png
       hash: md5
-      md5: b7fb871a22a9389c71bd4f3459bff4e1
-      size: 113091
+      md5: 7ed09a4a5ad8b931eee5d02fb248b9dc
+      size: 117572
     - path: data/models/random_forest_model.joblib
       hash: md5
-      md5: d80ce577c9ead14c311e5ffa8784536c
-      size: 11017
+      md5: e952297677efae4d2cd4dcd832543b59
+      size: 16297
     - path: data/models/roc_curve.png
       hash: md5
-      md5: 2ed44bbf1b64ec76670111669ef890fd
-      size: 129628
+      md5: 422d6ee84be483ee2213cd143d2224a9
+      size: 130081
     - path: data/models/scaler.joblib
       hash: md5
       md5: fa891da44b3e8949834ec6d4e61c8ae3
