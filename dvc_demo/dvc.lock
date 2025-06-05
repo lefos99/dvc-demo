@@ -1,13 +1,12 @@
 schema: '2.0'
 stages:
   split_data:
-    cmd: python code/split_data.py  --input data/raw/data.csv  --output data/processed  --test-size
-      0.2  --random-state 42
+    cmd: python code/split_data.py  --input data/raw/data.csv  --output data/processed
     deps:
     - path: code/split_data.py
       hash: md5
-      md5: 963e904487ad770d683b593108838348
-      size: 3486
+      md5: 01d95ef18da151d0f98b2885dd02df8c
+      size: 3295
     - path: data/raw/data.csv
       hash: md5
       md5: 2e145752c5e9df5fe367d25b6a9d9179
@@ -147,13 +146,12 @@ stages:
       size: 1895
   train_model:
     cmd: python code/train_model.py  --train data/processed/train.csv  --test data/processed/test.csv  --output
-      data/models  --n-estimators 10  --max-depth 2 --min-samples-split 2 --min-samples-leaf
-      1 --max-features sqrt --bootstrap true --random-state 42 --n-jobs -1
+      data/models
     deps:
     - path: code/train_model.py
       hash: md5
-      md5: fac012cdc5abd659e193a4ccd0f7ffae
-      size: 14650
+      md5: cb5318ef27463d06579c6a27582aedfa
+      size: 13627
     - path: data/processed/test.csv
       hash: md5
       md5: d5817f45d1fdcf02bf623853576b561d
@@ -198,7 +196,7 @@ stages:
       size: 113091
     - path: data/models/random_forest_model.joblib
       hash: md5
-      md5: a3093f0234fe8a8ca0ffe0dbc43a0f16
+      md5: d80ce577c9ead14c311e5ffa8784536c
       size: 11017
     - path: data/models/roc_curve.png
       hash: md5

@@ -90,22 +90,20 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Split dataset into train/test")
     parser.add_argument("--input", required=True, help="Input CSV file path")
     parser.add_argument("--output", required=True, help="Output directory for splits")
-    parser.add_argument("--test-size", type=float, 
-                       default=split_params.get('test_size', 0.2), 
-                       help="Test set proportion")
-    parser.add_argument("--random-state", type=int, 
-                       default=split_params.get('random_state', 42), 
-                       help="Random state")
     
     args = parser.parse_args()
     
-    print(f"Using parameters:")
-    print(f"  Test size: {args.test_size}")
-    print(f"  Random state: {args.random_state}")
+    # Get parameters from params.yaml
+    test_size = split_params.get('test_size', 0.2)
+    random_state = split_params.get('random_state', 42)
+    
+    print(f"Using parameters from params.yaml:")
+    print(f"  Test size: {test_size}")
+    print(f"  Random state: {random_state}")
     
     split_data(
         input_path=args.input,
         output_dir=args.output,
-        test_size=args.test_size,
-        random_state=args.random_state
+        test_size=test_size,
+        random_state=random_state
     ) 

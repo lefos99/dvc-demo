@@ -302,61 +302,48 @@ if __name__ == "__main__":
     parser.add_argument("--test", required=True, help="Test data CSV file path")
     parser.add_argument("--output", required=True, help="Output directory for model and results")
     
-    # Model hyperparameters with defaults from params.yaml
-    parser.add_argument("--n-estimators", type=int, 
-                       default=train_params.get('n_estimators', 100), 
-                       help="Number of trees")
-    parser.add_argument("--max-depth", type=str, 
-                       default=str(train_params.get('max_depth', 'None')), 
-                       help="Maximum tree depth")
-    parser.add_argument("--min-samples-split", type=int,
-                       default=train_params.get('min_samples_split', 2),
-                       help="Minimum samples required to split an internal node")
-    parser.add_argument("--min-samples-leaf", type=int,
-                       default=train_params.get('min_samples_leaf', 1),
-                       help="Minimum samples required to be at a leaf node")
-    parser.add_argument("--max-features", type=str,
-                       default=str(train_params.get('max_features', 'sqrt')),
-                       help="Number of features to consider for best split")
-    parser.add_argument("--bootstrap", type=bool,
-                       default=train_params.get('bootstrap', True),
-                       help="Whether bootstrap samples are used when building trees")
-    parser.add_argument("--random-state", type=int, 
-                       default=train_params.get('random_state', 42), 
-                       help="Random state")
-    parser.add_argument("--n-jobs", type=int,
-                       default=train_params.get('n_jobs', -1),
-                       help="Number of jobs to run in parallel")
-    
     args = parser.parse_args()
     
-    # Handle max_depth conversion
-    max_depth = None if args.max_depth in ['None', 'null', 'none'] else int(args.max_depth)
+    # Get all parameters from params.yaml
+    n_estimators = train_params.get('n_estimators', 100)
+    max_depth = train_params.get('max_depth', None)
+    min_samples_split = train_params.get('min_samples_split', 2)
+    min_samples_leaf = train_params.get('min_samples_leaf', 1)
+    max_features = train_params.get('max_features', 'sqrt')
+    bootstrap = train_params.get('bootstrap', True)
+    random_state = train_params.get('random_state', 42)
+    n_jobs = train_params.get('n_jobs', -1)
+    pos_label = train_params.get('pos_label', 'M')
+    use_feature_scaling = train_params.get('use_feature_scaling', True)
+    top_features_to_plot = train_params.get('top_features_to_plot', 20)
     
-    print(f"Using parameters from params.yaml and command line:")
-    print(f"  n_estimators: {args.n_estimators}")
+    print(f"Using parameters from params.yaml:")
+    print(f"  n_estimators: {n_estimators}")
     print(f"  max_depth: {max_depth}")
-    print(f"  min_samples_split: {args.min_samples_split}")
-    print(f"  min_samples_leaf: {args.min_samples_leaf}")
-    print(f"  max_features: {args.max_features}")
-    print(f"  bootstrap: {args.bootstrap}")
-    print(f"  random_state: {args.random_state}")
-    print(f"  n_jobs: {args.n_jobs}")
+    print(f"  min_samples_split: {min_samples_split}")
+    print(f"  min_samples_leaf: {min_samples_leaf}")
+    print(f"  max_features: {max_features}")
+    print(f"  bootstrap: {bootstrap}")
+    print(f"  random_state: {random_state}")
+    print(f"  n_jobs: {n_jobs}")
+    print(f"  pos_label: {pos_label}")
+    print(f"  use_feature_scaling: {use_feature_scaling}")
+    print(f"  top_features_to_plot: {top_features_to_plot}")
     
     train_model(
         train_path=args.train,
         test_path=args.test,
         output_dir=args.output,
-        n_estimators=args.n_estimators,
+        n_estimators=n_estimators,
         max_depth=max_depth,
-        min_samples_split=args.min_samples_split,
-        min_samples_leaf=args.min_samples_leaf,
-        max_features=args.max_features,
-        bootstrap=args.bootstrap,
-        random_state=args.random_state,
-        n_jobs=args.n_jobs,
-        pos_label=train_params.get('pos_label', 'M'),
-        use_feature_scaling=train_params.get('use_feature_scaling', True),
-        top_features_to_plot=train_params.get('top_features_to_plot', 20),
+        min_samples_split=min_samples_split,
+        min_samples_leaf=min_samples_leaf,
+        max_features=max_features,
+        bootstrap=bootstrap,
+        random_state=random_state,
+        n_jobs=n_jobs,
+        pos_label=pos_label,
+        use_feature_scaling=use_feature_scaling,
+        top_features_to_plot=top_features_to_plot,
         viz_config=viz_config
     ) 

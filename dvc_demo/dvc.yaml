@@ -3,9 +3,7 @@ stages:
     cmd: >-
       python code/split_data.py 
       --input data/raw/data.csv 
-      --output data/processed 
-      --test-size ${split_data.test_size} 
-      --random-state ${split_data.random_state}
+      --output data/processed
     deps:
     - data/raw/data.csv
     - code/split_data.py
@@ -46,15 +44,7 @@ stages:
       python code/train_model.py 
       --train data/processed/train.csv 
       --test data/processed/test.csv 
-      --output data/models 
-      --n-estimators ${train_model.n_estimators} 
-      --max-depth ${train_model.max_depth}
-      --min-samples-split ${train_model.min_samples_split}
-      --min-samples-leaf ${train_model.min_samples_leaf}
-      --max-features ${train_model.max_features}
-      --bootstrap ${train_model.bootstrap}
-      --random-state ${train_model.random_state}
-      --n-jobs ${train_model.n_jobs}
+      --output data/models
     deps:
     - data/processed/train.csv
     - data/processed/test.csv
