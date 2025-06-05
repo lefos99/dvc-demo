@@ -44,7 +44,7 @@ def train_model(train_path, test_path, output_dir, n_estimators=100, max_depth=N
     print(f"Test data shape: {test_df.shape}")
     
     # Prepare features and targets
-    feature_cols = [col for col in train_df.columns if col not in ['patient_id', 'diagnosis']]
+    feature_cols = [col for col in train_df.columns if col not in ['id', 'diagnosis']]
     
     X_train = train_df[feature_cols]
     y_train = train_df['diagnosis']

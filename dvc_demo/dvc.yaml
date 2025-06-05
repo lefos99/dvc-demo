@@ -1,0 +1,40 @@
+stages:
+  split_data:
+    cmd: python code/split_data.py --input data/data.csv --output data/processed --test-size 0.2 --random-state 42
+    deps:
+    - data/data.csv
+    - code/split_data.py
+    outs:
+    - data/processed/train.csv
+    - data/processed/test.csv
+
+  compute_data_statistics:
+    cmd: python code/data_statistics.py --train data/processed/train.csv --output reports/statistics
+    deps:
+    - data/processed/train.csv
+    - code/data_statistics.py
+    outs:
+    - reports/statistics/statistics.json
+    - reports/statistics/class_distribution.png
+    - reports/statistics/correlation_heatmap.png
+    - reports/statistics/feature_distributions.png
+    - reports/statistics/pairplot_key_features.png
+    - reports/statistics/feature_variance.png
+    - reports/statistics/summary_statistics.csv
+
+  train_model:
+    cmd: python code/train_model.py --train data/processed/train.csv --test data/processed/test.csv --output models --n-estimators 100 --random-state 42
+    deps:
+    - data/processed/train.csv
+    - data/processed/test.csv
+    - code/train_model.py
+    outs:
+    - models/random_forest_model.joblib
+    - models/scaler.joblib
+    - models/feature_importance.csv
+    - models/confusion_matrix.png
+    - models/roc_curve.png
+    - models/feature_importance.png
+    - models/prediction_analysis.png
+    metrics:
+    - models/metrics.json 

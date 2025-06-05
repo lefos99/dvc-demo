@@ -39,7 +39,7 @@ def generate_statistics(train_path, output_dir):
     stats['class_percentages'] = (class_dist / len(df) * 100).to_dict()
     
     # Feature statistics
-    feature_cols = [col for col in df.columns if col not in ['patient_id', 'diagnosis']]
+    feature_cols = [col for col in df.columns if col not in ['id', 'diagnosis']]
     feature_stats = df[feature_cols].describe()
     
     # Save detailed statistics to JSON

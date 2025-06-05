@@ -1,0 +1,23 @@
+schema: '2.0'
+stages:
+  split_data:
+    cmd: python code/split_data.py --input data/data.csv --output data/processed --test-size
+      0.2 --random-state 42
+    deps:
+    - path: code/split_data.py
+      hash: md5
+      md5: 56023bf7cd9940b231bd333a1a4406fc
+      size: 2756
+    - path: data/data.csv
+      hash: md5
+      md5: 6165d90b8708bb1c1dd14245cc6bef46
+      size: 125204
+    outs:
+    - path: data/processed/test.csv
+      hash: md5
+      md5: 98f42fe40222f2587e2d95f5631573d3
+      size: 25653
+    - path: data/processed/train.csv
+      hash: md5
+      md5: d4e69b09f9439b8a45dfbe19dcb646cc
+      size: 100983

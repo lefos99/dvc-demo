@@ -32,7 +32,7 @@ def split_data(input_path, output_dir, test_size=0.2, random_state=42):
     print(f"Diagnosis distribution:\n{df['diagnosis'].value_counts()}")
     
     # Separate features and target
-    X = df.drop(['patient_id', 'diagnosis'], axis=1)
+    X = df.drop(['id', 'diagnosis'], axis=1)
     y = df['diagnosis']
     
     # Split the data with stratification to maintain class balance
@@ -45,13 +45,13 @@ def split_data(input_path, output_dir, test_size=0.2, random_state=42):
     
     # Create train and test dataframes
     train_df = pd.concat([
-        df.loc[X_train.index, ['patient_id']],
+        df.loc[X_train.index, ['id']],
         y_train,
         X_train
     ], axis=1)
     
     test_df = pd.concat([
-        df.loc[X_test.index, ['patient_id']],
+        df.loc[X_test.index, ['id']],
         y_test,
         X_test
     ], axis=1)
