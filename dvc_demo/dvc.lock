@@ -26,7 +26,7 @@ stages:
       size: 100516
   compute_data_statistics@train:
     cmd: python code/data_statistics.py  --train data/processed/train.csv  --output
-      data/reports/statistics/train
+      data/processed/statistics/train
     deps:
     - path: code/data_statistics.py
       hash: md5
@@ -56,37 +56,37 @@ stages:
         - area_mean
         data_statistics.top_variance_features: 20
     outs:
-    - path: data/reports/statistics/train/class_distribution.png
+    - path: data/processed/statistics/train/class_distribution.png
       hash: md5
       md5: fcd515d4cc20b3fce172b3662d70e246
       size: 104154
-    - path: data/reports/statistics/train/correlation_heatmap.png
+    - path: data/processed/statistics/train/correlation_heatmap.png
       hash: md5
       md5: 7df3c572834739d2bc60e9b8108819a9
       size: 619067
-    - path: data/reports/statistics/train/feature_distributions.png
+    - path: data/processed/statistics/train/feature_distributions.png
       hash: md5
       md5: 6f7dd07bc94b910e38af8e7ba6bf4d74
       size: 498759
-    - path: data/reports/statistics/train/feature_variance.png
+    - path: data/processed/statistics/train/feature_variance.png
       hash: md5
       md5: 09d757e6612afe657f57a417cdd4417a
       size: 216198
-    - path: data/reports/statistics/train/pairplot_key_features.png
+    - path: data/processed/statistics/train/pairplot_key_features.png
       hash: md5
       md5: 94c72aaff4817be94eef45fbd0876622
       size: 1399391
-    - path: data/reports/statistics/train/statistics.json
+    - path: data/processed/statistics/train/statistics.json
       hash: md5
       md5: 43024da4475ab5971f825bdd2312479b
       size: 7654
-    - path: data/reports/statistics/train/summary_statistics.csv
+    - path: data/processed/statistics/train/summary_statistics.csv
       hash: md5
       md5: e27cdf1706405f92fba89fe28e30e2cd
       size: 1897
   compute_data_statistics@test:
     cmd: python code/data_statistics.py  --train data/processed/test.csv  --output
-      data/reports/statistics/test
+      data/processed/statistics/test
     deps:
     - path: code/data_statistics.py
       hash: md5
@@ -116,42 +116,42 @@ stages:
         - area_mean
         data_statistics.top_variance_features: 20
     outs:
-    - path: data/reports/statistics/test/class_distribution.png
+    - path: data/processed/statistics/test/class_distribution.png
       hash: md5
       md5: 71c710a354031fb1fba3a8e8e691ad0f
       size: 108049
-    - path: data/reports/statistics/test/correlation_heatmap.png
+    - path: data/processed/statistics/test/correlation_heatmap.png
       hash: md5
       md5: f9dcf8ddc401e47b8cc6607f09bf52fe
       size: 619159
-    - path: data/reports/statistics/test/feature_distributions.png
+    - path: data/processed/statistics/test/feature_distributions.png
       hash: md5
       md5: 35a4a64e202c9a4f6fb4ec568010815f
       size: 466468
-    - path: data/reports/statistics/test/feature_variance.png
+    - path: data/processed/statistics/test/feature_variance.png
       hash: md5
       md5: 68488905ccccfdd41ce84a5a8fd5da59
       size: 214742
-    - path: data/reports/statistics/test/pairplot_key_features.png
+    - path: data/processed/statistics/test/pairplot_key_features.png
       hash: md5
       md5: be56e35cb77568e534cb599080277c31
       size: 949898
-    - path: data/reports/statistics/test/statistics.json
+    - path: data/processed/statistics/test/statistics.json
       hash: md5
       md5: ce74781523ee0e334fec77ba08c4bb3f
       size: 7779
-    - path: data/reports/statistics/test/summary_statistics.csv
+    - path: data/processed/statistics/test/summary_statistics.csv
       hash: md5
       md5: 939a825f209e6bad35508e5e8e0792bd
       size: 1895
   train_model:
     cmd: python code/train_model.py  --train data/processed/train.csv  --test data/processed/test.csv  --output
-      data/models
+      data/model
     deps:
     - path: code/train_model.py
       hash: md5
-      md5: 6131ea4509ba327672747acce027fa7f
-      size: 13283
+      md5: 707c1616fc25308866eb5f24b133e2fc
+      size: 8227
     - path: data/processed/test.csv
       hash: md5
       md5: d5817f45d1fdcf02bf623853576b561d
@@ -170,38 +170,70 @@ stages:
         train_model.n_estimators: 1
         train_model.pos_label: M
         train_model.random_state: 42
-        train_model.top_features_to_plot: 20
         train_model.use_feature_scaling: true
     outs:
-    - path: data/models/confusion_matrix.png
-      hash: md5
-      md5: b89d31f8d4740c3f9b7ff7c21a0708e9
-      size: 71858
-    - path: data/models/feature_importance.csv
+    - path: data/model/feature_importance.csv
       hash: md5
       md5: fe646f526d3b2d419cc2288d460e65df
       size: 594
-    - path: data/models/feature_importance.png
-      hash: md5
-      md5: 16e481b6688e104a3dbed78fde8d5260
-      size: 221960
-    - path: data/models/metrics.json
-      hash: md5
-      md5: 6f51c112952ee3b0fe06528b4594ec37
-      size: 483
-    - path: data/models/prediction_analysis.png
-      hash: md5
-      md5: 2f49fdef204f039e2760f6369346f858
-      size: 131810
-    - path: data/models/random_forest_model.joblib
+    - path: data/model/random_forest_model.joblib
       hash: md5
       md5: c136bab0774ed786256c5712d49f7fab
       size: 2201
-    - path: data/models/roc_curve.png
-      hash: md5
-      md5: 7d16ef5fc689d77fbaaebcb738c6cb4b
-      size: 146859
-    - path: data/models/scaler.joblib
+    - path: data/model/scaler.joblib
       hash: md5
       md5: fa891da44b3e8949834ec6d4e61c8ae3
       size: 2087
+    - path: data/model/training_info.json
+      hash: md5
+      md5: 6bce57751c821fd21c1e793c80586947
+      size: 1136
+  evaluate_model:
+    cmd: python code/evaluate_model.py  --model data/model/random_forest_model.joblib
+      --scaler data/model/scaler.joblib --test data/processed/test.csv  --output data/model/evaluation
+    deps:
+    - path: code/evaluate_model.py
+      hash: md5
+      md5: 7845650543960488f7353ac1044e235d
+      size: 9679
+    - path: data/model/random_forest_model.joblib
+      hash: md5
+      md5: c136bab0774ed786256c5712d49f7fab
+      size: 2201
+    - path: data/model/scaler.joblib
+      hash: md5
+      md5: fa891da44b3e8949834ec6d4e61c8ae3
+      size: 2087
+    - path: data/processed/test.csv
+      hash: md5
+      md5: d5817f45d1fdcf02bf623853576b561d
+      size: 25527
+    params:
+      params.yaml:
+        evaluate_model.pos_label: M
+        evaluate_model.top_features_to_plot: 20
+    outs:
+    - path: data/model/evaluation/confusion_matrix.png
+      hash: md5
+      md5: b89d31f8d4740c3f9b7ff7c21a0708e9
+      size: 71858
+    - path: data/model/evaluation/feature_importance.csv
+      hash: md5
+      md5: fe646f526d3b2d419cc2288d460e65df
+      size: 594
+    - path: data/model/evaluation/feature_importance.png
+      hash: md5
+      md5: 16e481b6688e104a3dbed78fde8d5260
+      size: 221960
+    - path: data/model/evaluation/metrics.json
+      hash: md5
+      md5: d862d39b0496a0822932e188862f75ec
+      size: 257
+    - path: data/model/evaluation/prediction_analysis.png
+      hash: md5
+      md5: 2f49fdef204f039e2760f6369346f858
+      size: 131810
+    - path: data/model/evaluation/roc_curve.png
+      hash: md5
+      md5: 7d16ef5fc689d77fbaaebcb738c6cb4b
+      size: 146859

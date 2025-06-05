@@ -22,7 +22,7 @@ stages:
       cmd: >-
         python code/data_statistics.py 
         --train data/processed/${item}.csv 
-        --output data/reports/statistics/${item}
+        --output data/processed/statistics/${item}
       deps:
       - data/processed/${item}.csv
       - code/data_statistics.py
@@ -31,20 +31,20 @@ stages:
       - data_statistics.pairplot_features
       - data_statistics.top_variance_features
       outs:
-      - data/reports/statistics/${item}/statistics.json
-      - data/reports/statistics/${item}/class_distribution.png
-      - data/reports/statistics/${item}/correlation_heatmap.png
-      - data/reports/statistics/${item}/feature_distributions.png
-      - data/reports/statistics/${item}/pairplot_key_features.png
-      - data/reports/statistics/${item}/feature_variance.png
-      - data/reports/statistics/${item}/summary_statistics.csv
+      - data/processed/statistics/${item}/statistics.json
+      - data/processed/statistics/${item}/class_distribution.png
+      - data/processed/statistics/${item}/correlation_heatmap.png
+      - data/processed/statistics/${item}/feature_distributions.png
+      - data/processed/statistics/${item}/pairplot_key_features.png
+      - data/processed/statistics/${item}/feature_variance.png
+      - data/processed/statistics/${item}/summary_statistics.csv
 
   train_model:
     cmd: >-
       python code/train_model.py 
       --train data/processed/train.csv 
       --test data/processed/test.csv 
-      --output data/models
+      --output data/model
     deps:
     - data/processed/train.csv
     - data/processed/test.csv
@@ -59,14 +59,32 @@ stages:
     - train_model.random_state
     - train_model.pos_label
     - train_model.use_feature_scaling
-    - train_model.top_features_to_plot
     outs:
-    - data/models/random_forest_model.joblib
-    - data/models/scaler.joblib
-    - data/models/feature_importance.csv
-    - data/models/confusion_matrix.png
-    - data/models/roc_curve.png
-    - data/models/feature_importance.png
-    - data/models/prediction_analysis.png
+    - data/model/random_forest_model.joblib
+    - data/model/scaler.joblib
+    - data/model/feature_importance.csv
+    - data/model/training_info.json
+
+  evaluate_model:
+    cmd: >-
+      python code/evaluate_model.py 
+      --model data/model/random_forest_model.joblib
+      --scaler data/model/scaler.joblib
+      --test data/processed/test.csv 
+      --output data/model/evaluation
+    deps:
+    - data/model/random_forest_model.joblib
+    - data/model/scaler.joblib
+    - data/processed/test.csv
+    - code/evaluate_model.py
+    params:
+    - evaluate_model.pos_label
+    - evaluate_model.top_features_to_plot
+    outs:
+    - data/model/evaluation/confusion_matrix.png
+    - data/model/evaluation/roc_curve.png
+    - data/model/evaluation/feature_importance.png
+    - data/model/evaluation/prediction_analysis.png
+    - data/model/evaluation/feature_importance.csv
     metrics:
-    - data/models/metrics.json 
+    - data/model/evaluation/metrics.json 

@@ -37,11 +37,15 @@ train_model:
   random_state: 42         # Random seed for reproducibility
   n_jobs: 2              # Number of jobs to run in parallel (-1 uses all processors)
   
-  # Model evaluation parameters
+  # Model training parameters
   pos_label: "M"          # Positive class label for binary classification metrics
   
   # Feature selection and preprocessing
   use_feature_scaling: true     # Whether to apply StandardScaler
+
+evaluate_model:
+  # Model evaluation parameters
+  pos_label: "M"          # Positive class label for binary classification metrics
   
   # Visualization parameters
   top_features_to_plot: 20      # Number of top features to show in importance plot

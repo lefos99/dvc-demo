@@ -1,8 +1,6 @@
-/random_forest_model.joblib
-/scaler.joblib
-/feature_importance.csv
 /confusion_matrix.png
 /roc_curve.png
 /feature_importance.png
 /prediction_analysis.png
+/feature_importance.csv
 /metrics.json
