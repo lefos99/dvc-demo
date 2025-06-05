@@ -1,23 +1,113 @@
 schema: '2.0'
 stages:
   split_data:
-    cmd: python code/split_data.py --input data/data.csv --output data/processed --test-size
-      0.2 --random-state 42
+    cmd: python code/split_data.py --input data/raw/data.csv --output data/processed
+      --test-size 0.2 --random-state 42
     deps:
     - path: code/split_data.py
       hash: md5
       md5: 56023bf7cd9940b231bd333a1a4406fc
       size: 2756
-    - path: data/data.csv
+    - path: data/raw/data.csv
       hash: md5
-      md5: 6165d90b8708bb1c1dd14245cc6bef46
-      size: 125204
+      md5: 2e145752c5e9df5fe367d25b6a9d9179
+      size: 124571
     outs:
     - path: data/processed/test.csv
       hash: md5
-      md5: 98f42fe40222f2587e2d95f5631573d3
-      size: 25653
+      md5: d5817f45d1fdcf02bf623853576b561d
+      size: 25527
     - path: data/processed/train.csv
       hash: md5
-      md5: d4e69b09f9439b8a45dfbe19dcb646cc
-      size: 100983
+      md5: 12b24aa87cd748c7f2dbac58444e2181
+      size: 100516
+  compute_data_statistics:
+    cmd: python code/data_statistics.py --train data/processed/train.csv --output
+      data/reports/statistics
+    deps:
+    - path: code/data_statistics.py
+      hash: md5
+      md5: 3e8416c554cbae774f59bf8b5d82212c
+      size: 6124
+    - path: data/processed/train.csv
+      hash: md5
+      md5: 12b24aa87cd748c7f2dbac58444e2181
+      size: 100516
+    outs:
+    - path: data/reports/statistics/class_distribution.png
+      hash: md5
+      md5: fcd515d4cc20b3fce172b3662d70e246
+      size: 104154
+    - path: data/reports/statistics/correlation_heatmap.png
+      hash: md5
+      md5: 7df3c572834739d2bc60e9b8108819a9
+      size: 619067
+    - path: data/reports/statistics/feature_distributions.png
+      hash: md5
+      md5: 6f7dd07bc94b910e38af8e7ba6bf4d74
+      size: 498759
+    - path: data/reports/statistics/feature_variance.png
+      hash: md5
+      md5: 09d757e6612afe657f57a417cdd4417a
+      size: 216198
+    - path: data/reports/statistics/pairplot_key_features.png
+      hash: md5
+      md5: 94c72aaff4817be94eef45fbd0876622
+      size: 1399391
+    - path: data/reports/statistics/statistics.json
+      hash: md5
+      md5: d58eb9ca52e67b2be45d72f541cf6579
+      size: 7198
+    - path: data/reports/statistics/summary_statistics.csv
+      hash: md5
+      md5: e27cdf1706405f92fba89fe28e30e2cd
+      size: 1897
+  train_model:
+    cmd: python code/train_model.py --train data/processed/train.csv --test data/processed/test.csv
+      --output data/models --n-estimators 100 --random-state 42
+    deps:
+    - path: code/train_model.py
+      hash: md5
+      md5: 5cdf29cf385efac775cffed8fce71408
+      size: 8772
+    - path: data/processed/test.csv
+      hash: md5
+      md5: d5817f45d1fdcf02bf623853576b561d
+      size: 25527
+    - path: data/processed/train.csv
+      hash: md5
+      md5: 12b24aa87cd748c7f2dbac58444e2181
+      size: 100516
+    outs:
+    - path: data/models/confusion_matrix.png
+      hash: md5
+      md5: bbbce25378789791c37e03907b255145
+      size: 72703
+    - path: data/models/feature_importance.csv
+      hash: md5
+      md5: 4c2ac551c5613bce202e853b326d496e
+      size: 1094
+    - path: data/models/feature_importance.png
+      hash: md5
+      md5: 650c122cfd50800b2699b8468dcbdf0e
+      size: 222575
+    - path: data/models/metrics.json
+      hash: md5
+      md5: f052b419ec447ee5fd26cb31ad5a8420
+      size: 294
+    - path: data/models/prediction_analysis.png
+      hash: md5
+      md5: 89ce95884db0edb97ebe497136d5ebc1
+      size: 118413
+    - path: data/models/random_forest_model.joblib
+      hash: md5
+      md5: 415e48e48e9f6f3dedf15841b3df26c0
+      size: 326377
+    - path: data/models/roc_curve.png
+      hash: md5
+      md5: 15b2dac4df21208de5badf086024db1c
+      size: 130948
+    - path: data/models/scaler.joblib
+      hash: md5
+      md5: fa891da44b3e8949834ec6d4e61c8ae3
+      size: 2087
