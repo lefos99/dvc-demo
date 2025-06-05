@@ -85,12 +85,18 @@ dvc-demo/
    cd dvc-demo
    ```
 
-2. **Install dependencies**:
+2. **Create a virtual environment** (optional):
+   ```bash
+   python -m venv venv
+   source venv/bin/activate
+   ```
+
+3. **Install dependencies**:
    ```bash
    pip install -r requirements.txt
    ```
 
-3. **Initialize DVC** (if not already done):
+4. **Initialize DVC** (if not already done):
    ```bash
    dvc init
    ```
