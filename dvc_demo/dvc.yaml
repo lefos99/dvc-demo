@@ -1,6 +1,11 @@
 stages:
   split_data:
-    cmd: python code/split_data.py --input data/raw/data.csv --output data/processed --test-size ${split_data.test_size} --random-state ${split_data.random_state}
+    cmd: >-
+      python code/split_data.py 
+      --input data/raw/data.csv 
+      --output data/processed 
+      --test-size ${split_data.test_size} 
+      --random-state ${split_data.random_state}
     deps:
     - data/raw/data.csv
     - code/split_data.py
@@ -12,7 +17,10 @@ stages:
     - data/processed/test.csv
 
   compute_data_statistics:
-    cmd: python code/data_statistics.py --train data/processed/train.csv --output data/reports/statistics
+    cmd: >-
+      python code/data_statistics.py 
+      --train data/processed/train.csv 
+      --output data/reports/statistics
     deps:
     - data/processed/train.csv
     - code/data_statistics.py

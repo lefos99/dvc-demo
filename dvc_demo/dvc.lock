@@ -1,8 +1,8 @@
 schema: '2.0'
 stages:
   split_data:
-    cmd: python code/split_data.py --input data/raw/data.csv --output data/processed
-      --test-size 0.2 --random-state 42
+    cmd: python code/split_data.py  --input data/raw/data.csv  --output data/processed  --test-size
+      0.2  --random-state 42
     deps:
     - path: code/split_data.py
       hash: md5
@@ -26,7 +26,7 @@ stages:
       md5: 12b24aa87cd748c7f2dbac58444e2181
       size: 100516
   compute_data_statistics:
-    cmd: python code/data_statistics.py --train data/processed/train.csv --output
+    cmd: python code/data_statistics.py  --train data/processed/train.csv  --output
       data/reports/statistics
     deps:
     - path: code/data_statistics.py
