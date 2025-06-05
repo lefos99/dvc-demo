@@ -150,8 +150,8 @@ stages:
     deps:
     - path: code/train_model.py
       hash: md5
-      md5: 707c1616fc25308866eb5f24b133e2fc
-      size: 8227
+      md5: 52efa787992b0fe6ac0d8babac08ab98
+      size: 8180
     - path: data/processed/test.csv
       hash: md5
       md5: d5817f45d1fdcf02bf623853576b561d

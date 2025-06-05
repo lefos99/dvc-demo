@@ -103,7 +103,8 @@ def train_model(train_path, test_path, output_dir, n_estimators=100, max_depth=N
         max_features=max_features,
         bootstrap=bootstrap,
         random_state=random_state,
-        n_jobs=n_jobs
+        n_jobs=n_jobs,
+        # criterion='gini'
     )
     
     rf_model.fit(X_train_scaled, y_train)
