@@ -28,7 +28,6 @@ stages:
     - data_statistics.important_features
     - data_statistics.pairplot_features
     - data_statistics.top_variance_features
-    - data_statistics.visualization
     outs:
     - data/reports/statistics/statistics.json
     - data/reports/statistics/class_distribution.png
@@ -68,7 +67,6 @@ stages:
     - train_model.pos_label
     - train_model.use_feature_scaling
     - train_model.top_features_to_plot
-    - train_model.visualization
     outs:
     - data/models/random_forest_model.joblib
     - data/models/scaler.joblib

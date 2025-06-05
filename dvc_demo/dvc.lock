@@ -56,18 +56,6 @@ stages:
         - perimeter_mean
         - area_mean
         data_statistics.top_variance_features: 20
-        data_statistics.visualization:
-          figure_size_large:
-          - 20
-          - 16
-          figure_size_medium:
-          - 12
-          - 10
-          figure_size_small:
-          - 12
-          - 8
-          dpi: 300
-          style: seaborn-v0_8
     outs:
     - path: data/reports/statistics/class_distribution.png
       hash: md5
@@ -127,31 +115,6 @@ stages:
         train_model.random_state: 42
         train_model.top_features_to_plot: 20
         train_model.use_feature_scaling: true
-        train_model.visualization:
-          confusion_matrix:
-            figsize:
-            - 8
-            - 6
-            cmap: Blues
-            class_labels:
-            - Benign
-            - Malignant
-          roc_curve:
-            figsize:
-            - 8
-            - 6
-            line_color: darkorange
-            line_width: 2
-          feature_importance:
-            figsize:
-            - 12
-            - 8
-          prediction_analysis:
-            figsize:
-            - 12
-            - 5
-            hist_bins: 30
-            hist_alpha: 0.7
     outs:
     - path: data/models/confusion_matrix.png
       hash: md5
@@ -175,7 +138,7 @@ stages:
       size: 115465
     - path: data/models/random_forest_model.joblib
       hash: md5
-      md5: 65e485ec54a059743a31118a0001c816
+      md5: c3ec50bd43885ba9621808e8fbaa5dce
       size: 326377
     - path: data/models/roc_curve.png
       hash: md5

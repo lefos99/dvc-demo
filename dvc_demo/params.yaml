@@ -1,14 +1,12 @@
 # DVC Pipeline Parameters Configuration
 # This file contains all configurable parameters for the breast cancer classification pipeline
 
-# Data splitting stage parameters
 split_data:
-  test_size: 0.2           # Proportion of data for testing (0.0-1.0)
-  random_state: 42         # Random seed for reproducibility
+  test_size: 0.2
+  random_state: 42
 
-# Data statistics stage parameters
 data_statistics:
-  important_features:      # Features to highlight in distributions plot
+  important_features:
     - "radius_mean"
     - "texture_mean"
     - "perimeter_mean"
@@ -20,22 +18,14 @@ data_statistics:
     - "symmetry_mean"
     - "fractal_dimension_mean"
   
-  pairplot_features:       # Features for pairplot analysis
+  pairplot_features:
     - "radius_mean"
     - "texture_mean"
     - "perimeter_mean"
     - "area_mean"
   
-  top_variance_features: 20  # Number of top variance features to plot
-  
-  visualization:
-    figure_size_large: [20, 16]   # Large plot dimensions [width, height]
-    figure_size_medium: [12, 10]  # Medium plot dimensions
-    figure_size_small: [12, 8]    # Small plot dimensions
-    dpi: 300                      # Resolution for saved plots
-    style: "seaborn-v0_8"         # Matplotlib style
+  top_variance_features: 20
 
-# Model training stage parameters
 train_model:
   # Random Forest hyperparameters
   n_estimators: 100        # Number of trees in the forest
@@ -49,42 +39,9 @@ train_model:
   
   # Model evaluation parameters
   pos_label: "M"          # Positive class label for binary classification metrics
-  cv_folds: 5             # Number of cross-validation folds (for future use)
   
   # Feature selection and preprocessing
   use_feature_scaling: true     # Whether to apply StandardScaler
-  feature_selection: false      # Whether to apply feature selection (for future use)
   
   # Visualization parameters
   top_features_to_plot: 20      # Number of top features to show in importance plot
-  
-  visualization:
-    confusion_matrix:
-      figsize: [8, 6]
-      cmap: "Blues"
-      class_labels: ["Benign", "Malignant"]
-    
-    roc_curve:
-      figsize: [8, 6]
-      line_color: "darkorange"
-      line_width: 2
-    
-    feature_importance:
-      figsize: [12, 8]
-    
-    prediction_analysis:
-      figsize: [12, 5]
-      hist_bins: 30
-      hist_alpha: 0.7
-
-# General pipeline settings
-general:
-  # File and directory settings
-  random_seed: 42           # Global random seed
-  
-  # Output settings
-  save_plots: true          # Whether to save visualization plots
-  save_metrics: true        # Whether to save metrics to JSON files
-  
-  # Logging settings
-  verbose: true             # Whether to print detailed progress information 
