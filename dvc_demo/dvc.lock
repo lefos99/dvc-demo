@@ -150,8 +150,8 @@ stages:
     deps:
     - path: code/train_model.py
       hash: md5
-      md5: cb5318ef27463d06579c6a27582aedfa
-      size: 13627
+      md5: 6131ea4509ba327672747acce027fa7f
+      size: 13283
     - path: data/processed/test.csv
       hash: md5
       md5: d5817f45d1fdcf02bf623853576b561d
@@ -168,7 +168,7 @@ stages:
         train_model.min_samples_leaf: 1
         train_model.min_samples_split: 2
         train_model.n_estimators: 10
-        train_model.n_jobs: -1
+        train_model.n_jobs: 2
         train_model.pos_label: M
         train_model.random_state: 42
         train_model.top_features_to_plot: 20
@@ -188,15 +188,15 @@ stages:
       size: 224307
     - path: data/models/metrics.json
       hash: md5
-      md5: 0c8cd24cbb8c07ff8220b0f23f649bde
-      size: 483
+      md5: 0fa657e9b205369a723314b0016e4e0e
+      size: 482
     - path: data/models/prediction_analysis.png
       hash: md5
       md5: 7ed09a4a5ad8b931eee5d02fb248b9dc
       size: 117572
     - path: data/models/random_forest_model.joblib
       hash: md5
-      md5: e952297677efae4d2cd4dcd832543b59
+      md5: 9ec4ed6db9b422658075f08b3ef1b563
       size: 16297
     - path: data/models/roc_curve.png
       hash: md5

@@ -35,7 +35,7 @@ train_model:
   max_features: "sqrt"     # Number of features to consider for best split
   bootstrap: true          # Whether bootstrap samples are used when building trees
   random_state: 42         # Random seed for reproducibility
-  n_jobs: -1              # Number of jobs to run in parallel (-1 uses all processors)
+  n_jobs: 2              # Number of jobs to run in parallel (-1 uses all processors)
   
   # Model evaluation parameters
   pos_label: "M"          # Positive class label for binary classification metrics
