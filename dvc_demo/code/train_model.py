@@ -66,7 +66,6 @@ def train_model(train_path, test_path, output_dir, n_estimators=100, max_depth=N
     
     X_train = train_df[feature_cols]
     y_train = train_df['diagnosis']
-    X_test = test_df[feature_cols]  # Only for feature consistency check
     
     # Feature scaling
     if use_feature_scaling:
