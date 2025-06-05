@@ -9,6 +9,18 @@ import numpy as np
 from sklearn.model_selection import train_test_split
 import argparse
 import os
+import yaml
+
+
+def load_params():
+    """Load parameters from params.yaml file."""
+    try:
+        with open('params.yaml', 'r') as f:
+            params = yaml.safe_load(f)
+        return params
+    except FileNotFoundError:
+        print("Warning: params.yaml not found. Using default parameters.")
+        return {}
 
 
 def split_data(input_path, output_dir, test_size=0.2, random_state=42):
@@ -71,13 +83,25 @@ def split_data(input_path, output_dir, test_size=0.2, random_state=42):
 
 
 if __name__ == "__main__":
+    # Load parameters from params.yaml
+    params = load_params()
+    split_params = params.get('split_data', {})
+    
     parser = argparse.ArgumentParser(description="Split dataset into train/test")
     parser.add_argument("--input", required=True, help="Input CSV file path")
     parser.add_argument("--output", required=True, help="Output directory for splits")
-    parser.add_argument("--test-size", type=float, default=0.2, help="Test set proportion")
-    parser.add_argument("--random-state", type=int, default=42, help="Random state")
+    parser.add_argument("--test-size", type=float, 
+                       default=split_params.get('test_size', 0.2), 
+                       help="Test set proportion")
+    parser.add_argument("--random-state", type=int, 
+                       default=split_params.get('random_state', 42), 
+                       help="Random state")
     
     args = parser.parse_args()
+    
+    print(f"Using parameters:")
+    print(f"  Test size: {args.test_size}")
+    print(f"  Random state: {args.random_state}")
     
     split_data(
         input_path=args.input,

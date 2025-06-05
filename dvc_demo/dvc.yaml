@@ -1,9 +1,12 @@
 stages:
   split_data:
-    cmd: python code/split_data.py --input data/raw/data.csv --output data/processed --test-size 0.2 --random-state 42
+    cmd: python code/split_data.py --input data/raw/data.csv --output data/processed --test-size ${split_data.test_size} --random-state ${split_data.random_state}
     deps:
     - data/raw/data.csv
     - code/split_data.py
+    params:
+    - split_data.test_size
+    - split_data.random_state
     outs:
     - data/processed/train.csv
     - data/processed/test.csv
@@ -13,6 +16,11 @@ stages:
     deps:
     - data/processed/train.csv
     - code/data_statistics.py
+    params:
+    - data_statistics.important_features
+    - data_statistics.pairplot_features
+    - data_statistics.top_variance_features
+    - data_statistics.visualization
     outs:
     - data/reports/statistics/statistics.json
     - data/reports/statistics/class_distribution.png
@@ -23,11 +31,36 @@ stages:
     - data/reports/statistics/summary_statistics.csv
 
   train_model:
-    cmd: python code/train_model.py --train data/processed/train.csv --test data/processed/test.csv --output data/models --n-estimators 100 --random-state 42
+    cmd: >-
+      python code/train_model.py 
+      --train data/processed/train.csv 
+      --test data/processed/test.csv 
+      --output data/models 
+      --n-estimators ${train_model.n_estimators} 
+      --max-depth ${train_model.max_depth}
+      --min-samples-split ${train_model.min_samples_split}
+      --min-samples-leaf ${train_model.min_samples_leaf}
+      --max-features ${train_model.max_features}
+      --bootstrap ${train_model.bootstrap}
+      --random-state ${train_model.random_state}
+      --n-jobs ${train_model.n_jobs}
     deps:
     - data/processed/train.csv
     - data/processed/test.csv
     - code/train_model.py
+    params:
+    - train_model.n_estimators
+    - train_model.max_depth
+    - train_model.min_samples_split
+    - train_model.min_samples_leaf
+    - train_model.max_features
+    - train_model.bootstrap
+    - train_model.random_state
+    - train_model.n_jobs
+    - train_model.pos_label
+    - train_model.use_feature_scaling
+    - train_model.top_features_to_plot
+    - train_model.visualization
     outs:
     - data/models/random_forest_model.joblib
     - data/models/scaler.joblib

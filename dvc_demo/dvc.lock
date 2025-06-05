@@ -6,12 +6,16 @@ stages:
     deps:
     - path: code/split_data.py
       hash: md5
-      md5: 56023bf7cd9940b231bd333a1a4406fc
-      size: 2756
+      md5: 963e904487ad770d683b593108838348
+      size: 3486
     - path: data/raw/data.csv
       hash: md5
       md5: 2e145752c5e9df5fe367d25b6a9d9179
       size: 124571
+    params:
+      params.yaml:
+        split_data.random_state: 42
+        split_data.test_size: 0.2
     outs:
     - path: data/processed/test.csv
       hash: md5
@@ -27,12 +31,43 @@ stages:
     deps:
     - path: code/data_statistics.py
       hash: md5
-      md5: 3e8416c554cbae774f59bf8b5d82212c
-      size: 6124
+      md5: d2b4f8a6b05d093e8de381b55a679db6
+      size: 8728
     - path: data/processed/train.csv
       hash: md5
       md5: 12b24aa87cd748c7f2dbac58444e2181
       size: 100516
+    params:
+      params.yaml:
+        data_statistics.important_features:
+        - radius_mean
+        - texture_mean
+        - perimeter_mean
+        - area_mean
+        - smoothness_mean
+        - compactness_mean
+        - concavity_mean
+        - concave points_mean
+        - symmetry_mean
+        - fractal_dimension_mean
+        data_statistics.pairplot_features:
+        - radius_mean
+        - texture_mean
+        - perimeter_mean
+        - area_mean
+        data_statistics.top_variance_features: 20
+        data_statistics.visualization:
+          figure_size_large:
+          - 20
+          - 16
+          figure_size_medium:
+          - 12
+          - 10
+          figure_size_small:
+          - 12
+          - 8
+          dpi: 300
+          style: seaborn-v0_8
     outs:
     - path: data/reports/statistics/class_distribution.png
       hash: md5
@@ -56,20 +91,21 @@ stages:
       size: 1399391
     - path: data/reports/statistics/statistics.json
       hash: md5
-      md5: d58eb9ca52e67b2be45d72f541cf6579
-      size: 7198
+      md5: 43024da4475ab5971f825bdd2312479b
+      size: 7654
     - path: data/reports/statistics/summary_statistics.csv
       hash: md5
       md5: e27cdf1706405f92fba89fe28e30e2cd
       size: 1897
   train_model:
-    cmd: python code/train_model.py --train data/processed/train.csv --test data/processed/test.csv
-      --output data/models --n-estimators 100 --random-state 42
+    cmd: python code/train_model.py  --train data/processed/train.csv  --test data/processed/test.csv  --output
+      data/models  --n-estimators 100  --max-depth None --min-samples-split 2 --min-samples-leaf
+      1 --max-features sqrt --bootstrap true --random-state 42 --n-jobs -1
     deps:
     - path: code/train_model.py
       hash: md5
-      md5: 5cdf29cf385efac775cffed8fce71408
-      size: 8772
+      md5: fac012cdc5abd659e193a4ccd0f7ffae
+      size: 14650
     - path: data/processed/test.csv
       hash: md5
       md5: d5817f45d1fdcf02bf623853576b561d
@@ -78,6 +114,44 @@ stages:
       hash: md5
       md5: 12b24aa87cd748c7f2dbac58444e2181
       size: 100516
+    params:
+      params.yaml:
+        train_model.bootstrap: true
+        train_model.max_depth:
+        train_model.max_features: sqrt
+        train_model.min_samples_leaf: 1
+        train_model.min_samples_split: 2
+        train_model.n_estimators: 100
+        train_model.n_jobs: -1
+        train_model.pos_label: M
+        train_model.random_state: 42
+        train_model.top_features_to_plot: 20
+        train_model.use_feature_scaling: true
+        train_model.visualization:
+          confusion_matrix:
+            figsize:
+            - 8
+            - 6
+            cmap: Blues
+            class_labels:
+            - Benign
+            - Malignant
+          roc_curve:
+            figsize:
+            - 8
+            - 6
+            line_color: darkorange
+            line_width: 2
+          feature_importance:
+            figsize:
+            - 12
+            - 8
+          prediction_analysis:
+            figsize:
+            - 12
+            - 5
+            hist_bins: 30
+            hist_alpha: 0.7
     outs:
     - path: data/models/confusion_matrix.png
       hash: md5
@@ -93,15 +167,15 @@ stages:
       size: 222575
     - path: data/models/metrics.json
       hash: md5
-      md5: f052b419ec447ee5fd26cb31ad5a8420
-      size: 294
+      md5: b47a4350606b47c6cfceddc55a2dd247
+      size: 473
     - path: data/models/prediction_analysis.png
       hash: md5
-      md5: 89ce95884db0edb97ebe497136d5ebc1
-      size: 118413
+      md5: cf341320240cc751d1ea442955ce2062
+      size: 115465
     - path: data/models/random_forest_model.joblib
       hash: md5
-      md5: 415e48e48e9f6f3dedf15841b3df26c0
+      md5: 65e485ec54a059743a31118a0001c816
       size: 326377
     - path: data/models/roc_curve.png
       hash: md5

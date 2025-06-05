@@ -17,9 +17,24 @@ import argparse
 import os
 import json
 import joblib
+import yaml
 
 
-def train_model(train_path, test_path, output_dir, n_estimators=100, max_depth=None, random_state=42):
+def load_params():
+    """Load parameters from params.yaml file."""
+    try:
+        with open('params.yaml', 'r') as f:
+            params = yaml.safe_load(f)
+        return params
+    except FileNotFoundError:
+        print("Warning: params.yaml not found. Using default parameters.")
+        return {}
+
+
+def train_model(train_path, test_path, output_dir, n_estimators=100, max_depth=None, 
+                min_samples_split=2, min_samples_leaf=1, max_features='sqrt', 
+                bootstrap=True, random_state=42, n_jobs=-1, pos_label='M',
+                use_feature_scaling=True, top_features_to_plot=20, viz_config=None):
     """
     Train a Random Forest model and evaluate its performance.
     
@@ -29,8 +44,20 @@ def train_model(train_path, test_path, output_dir, n_estimators=100, max_depth=N
         output_dir (str): Directory to save model and results
         n_estimators (int): Number of trees in the forest
         max_depth (int): Maximum depth of the trees
+        min_samples_split (int): Minimum samples required to split an internal node
+        min_samples_leaf (int): Minimum samples required to be at a leaf node
+        max_features (str/int): Number of features to consider for best split
+        bootstrap (bool): Whether bootstrap samples are used when building trees
         random_state (int): Random state for reproducibility
+        n_jobs (int): Number of jobs to run in parallel
+        pos_label (str): Positive class label for binary classification metrics
+        use_feature_scaling (bool): Whether to apply StandardScaler
+        top_features_to_plot (int): Number of top features to show in importance plot
+        viz_config (dict): Visualization configuration
     """
+    if viz_config is None:
+        viz_config = {}
+    
     # Create output directory if it doesn't exist
     os.makedirs(output_dir, exist_ok=True)
     
@@ -52,21 +79,44 @@ def train_model(train_path, test_path, output_dir, n_estimators=100, max_depth=N
     y_test = test_df['diagnosis']
     
     # Feature scaling
-    scaler = StandardScaler()
-    X_train_scaled = scaler.fit_transform(X_train)
-    X_test_scaled = scaler.transform(X_test)
+    if use_feature_scaling:
+        scaler = StandardScaler()
+        X_train_scaled = scaler.fit_transform(X_train)
+        X_test_scaled = scaler.transform(X_test)
+        
+        # Save the scaler
+        scaler_path = os.path.join(output_dir, 'scaler.joblib')
+        joblib.dump(scaler, scaler_path)
+        print(f"Feature scaling applied and scaler saved")
+    else:
+        X_train_scaled = X_train.values
+        X_test_scaled = X_test.values
+        print(f"Feature scaling skipped")
     
-    # Save the scaler
-    scaler_path = os.path.join(output_dir, 'scaler.joblib')
-    joblib.dump(scaler, scaler_path)
+    # Convert max_features if it's a string representing None
+    if max_features == 'None' or max_features == 'null':
+        max_features = None
     
     # Train Random Forest model
-    print(f"Training Random Forest with {n_estimators} estimators, max_depth={max_depth}")
+    print(f"Training Random Forest with the following parameters:")
+    print(f"  n_estimators: {n_estimators}")
+    print(f"  max_depth: {max_depth}")
+    print(f"  min_samples_split: {min_samples_split}")
+    print(f"  min_samples_leaf: {min_samples_leaf}")
+    print(f"  max_features: {max_features}")
+    print(f"  bootstrap: {bootstrap}")
+    print(f"  random_state: {random_state}")
+    print(f"  n_jobs: {n_jobs}")
+    
     rf_model = RandomForestClassifier(
         n_estimators=n_estimators,
         max_depth=max_depth,
+        min_samples_split=min_samples_split,
+        min_samples_leaf=min_samples_leaf,
+        max_features=max_features,
+        bootstrap=bootstrap,
         random_state=random_state,
-        n_jobs=-1
+        n_jobs=n_jobs
     )
     
     rf_model.fit(X_train_scaled, y_train)
@@ -88,16 +138,23 @@ def train_model(train_path, test_path, output_dir, n_estimators=100, max_depth=N
     
     # Test metrics
     metrics['test_accuracy'] = accuracy_score(y_test, y_test_pred)
-    metrics['test_precision'] = precision_score(y_test, y_test_pred, pos_label='M')
-    metrics['test_recall'] = recall_score(y_test, y_test_pred, pos_label='M')
-    metrics['test_f1'] = f1_score(y_test, y_test_pred, pos_label='M')
-    metrics['test_roc_auc'] = roc_auc_score(y_test == 'M', y_test_proba)
+    metrics['test_precision'] = precision_score(y_test, y_test_pred, pos_label=pos_label)
+    metrics['test_recall'] = recall_score(y_test, y_test_pred, pos_label=pos_label)
+    metrics['test_f1'] = f1_score(y_test, y_test_pred, pos_label=pos_label)
+    metrics['test_roc_auc'] = roc_auc_score(y_test == pos_label, y_test_proba)
     
     # Model parameters
     metrics['model_params'] = {
         'n_estimators': n_estimators,
         'max_depth': max_depth,
-        'random_state': random_state
+        'min_samples_split': min_samples_split,
+        'min_samples_leaf': min_samples_leaf,
+        'max_features': str(max_features),
+        'bootstrap': bootstrap,
+        'random_state': random_state,
+        'n_jobs': n_jobs,
+        'pos_label': pos_label,
+        'use_feature_scaling': use_feature_scaling
     }
     
     # Save metrics
@@ -123,15 +180,25 @@ def train_model(train_path, test_path, output_dir, n_estimators=100, max_depth=N
     print("\nClassification Report:")
     print(classification_report(y_test, y_test_pred))
     
-    # Visualization
+    # Visualization parameters from config
+    cm_config = viz_config.get('confusion_matrix', {})
+    roc_config = viz_config.get('roc_curve', {})
+    fi_config = viz_config.get('feature_importance', {})
+    pa_config = viz_config.get('prediction_analysis', {})
+    
+    # Set default matplotlib style
     plt.style.use('seaborn-v0_8')
     
     # 1. Confusion Matrix
     cm = confusion_matrix(y_test, y_test_pred)
-    plt.figure(figsize=(8, 6))
-    sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', 
-                xticklabels=['Benign', 'Malignant'], 
-                yticklabels=['Benign', 'Malignant'])
+    figsize = cm_config.get('figsize', [8, 6])
+    cmap = cm_config.get('cmap', 'Blues')
+    class_labels = cm_config.get('class_labels', ['Benign', 'Malignant'])
+    
+    plt.figure(figsize=figsize)
+    sns.heatmap(cm, annot=True, fmt='d', cmap=cmap, 
+                xticklabels=class_labels, 
+                yticklabels=class_labels)
     plt.title('Confusion Matrix')
     plt.xlabel('Predicted')
     plt.ylabel('Actual')
@@ -139,9 +206,13 @@ def train_model(train_path, test_path, output_dir, n_estimators=100, max_depth=N
     plt.close()
     
     # 2. ROC Curve
-    fpr, tpr, _ = roc_curve(y_test == 'M', y_test_proba)
-    plt.figure(figsize=(8, 6))
-    plt.plot(fpr, tpr, color='darkorange', lw=2, 
+    fpr, tpr, _ = roc_curve(y_test == pos_label, y_test_proba)
+    figsize = roc_config.get('figsize', [8, 6])
+    line_color = roc_config.get('line_color', 'darkorange')
+    line_width = roc_config.get('line_width', 2)
+    
+    plt.figure(figsize=figsize)
+    plt.plot(fpr, tpr, color=line_color, lw=line_width, 
              label=f'ROC curve (AUC = {metrics["test_roc_auc"]:.3f})')
     plt.plot([0, 1], [0, 1], color='navy', lw=2, linestyle='--')
     plt.xlim([0.0, 1.0])
@@ -162,26 +233,32 @@ def train_model(train_path, test_path, output_dir, n_estimators=100, max_depth=N
     # Save feature importance
     feature_importance.to_csv(os.path.join(output_dir, 'feature_importance.csv'), index=False)
     
-    # Plot top 20 feature importances
-    plt.figure(figsize=(12, 8))
-    top_20_features = feature_importance.head(20)
-    plt.barh(range(len(top_20_features)), top_20_features['importance'])
-    plt.yticks(range(len(top_20_features)), top_20_features['feature'])
+    # Plot top N feature importances
+    figsize = fi_config.get('figsize', [12, 8])
+    
+    plt.figure(figsize=figsize)
+    top_features = feature_importance.head(top_features_to_plot)
+    plt.barh(range(len(top_features)), top_features['importance'])
+    plt.yticks(range(len(top_features)), top_features['feature'])
     plt.xlabel('Feature Importance')
-    plt.title('Top 20 Most Important Features')
+    plt.title(f'Top {top_features_to_plot} Most Important Features')
     plt.gca().invert_yaxis()
     plt.tight_layout()
     plt.savefig(os.path.join(output_dir, 'feature_importance.png'), dpi=300, bbox_inches='tight')
     plt.close()
     
     # 4. Prediction distribution
-    plt.figure(figsize=(12, 5))
+    figsize = pa_config.get('figsize', [12, 5])
+    hist_bins = pa_config.get('hist_bins', 30)
+    hist_alpha = pa_config.get('hist_alpha', 0.7)
+    
+    plt.figure(figsize=figsize)
     
     # Subplot 1: Prediction probabilities
     plt.subplot(1, 2, 1)
-    plt.hist(y_test_proba[y_test == 'B'], bins=30, alpha=0.7, label='Benign', color='blue')
-    plt.hist(y_test_proba[y_test == 'M'], bins=30, alpha=0.7, label='Malignant', color='red')
-    plt.xlabel('Prediction Probability (Malignant)')
+    plt.hist(y_test_proba[y_test == 'B'], bins=hist_bins, alpha=hist_alpha, label='Benign', color='blue')
+    plt.hist(y_test_proba[y_test == pos_label], bins=hist_bins, alpha=hist_alpha, label='Malignant', color='red')
+    plt.xlabel(f'Prediction Probability ({pos_label})')
     plt.ylabel('Frequency')
     plt.title('Distribution of Prediction Probabilities')
     plt.legend()
@@ -189,7 +266,7 @@ def train_model(train_path, test_path, output_dir, n_estimators=100, max_depth=N
     # Subplot 2: Model confidence
     plt.subplot(1, 2, 2)
     confidence = np.max(rf_model.predict_proba(X_test_scaled), axis=1)
-    plt.hist(confidence, bins=30, alpha=0.7, color='green')
+    plt.hist(confidence, bins=hist_bins, alpha=hist_alpha, color='green')
     plt.xlabel('Model Confidence')
     plt.ylabel('Frequency')
     plt.title('Distribution of Model Confidence')
@@ -201,7 +278,8 @@ def train_model(train_path, test_path, output_dir, n_estimators=100, max_depth=N
     print(f"\nModel training completed!")
     print(f"Files saved to {output_dir}:")
     print(f"  - random_forest_model.joblib")
-    print(f"  - scaler.joblib")
+    if use_feature_scaling:
+        print(f"  - scaler.joblib")
     print(f"  - metrics.json")
     print(f"  - classification_report.json")
     print(f"  - feature_importance.csv")
@@ -214,21 +292,71 @@ def train_model(train_path, test_path, output_dir, n_estimators=100, max_depth=N
 
 
 if __name__ == "__main__":
+    # Load parameters from params.yaml
+    params = load_params()
+    train_params = params.get('train_model', {})
+    viz_config = train_params.get('visualization', {})
+    
     parser = argparse.ArgumentParser(description="Train Random Forest model")
     parser.add_argument("--train", required=True, help="Training data CSV file path")
     parser.add_argument("--test", required=True, help="Test data CSV file path")
     parser.add_argument("--output", required=True, help="Output directory for model and results")
-    parser.add_argument("--n-estimators", type=int, default=100, help="Number of trees")
-    parser.add_argument("--max-depth", type=int, default=None, help="Maximum tree depth")
-    parser.add_argument("--random-state", type=int, default=42, help="Random state")
+    
+    # Model hyperparameters with defaults from params.yaml
+    parser.add_argument("--n-estimators", type=int, 
+                       default=train_params.get('n_estimators', 100), 
+                       help="Number of trees")
+    parser.add_argument("--max-depth", type=str, 
+                       default=str(train_params.get('max_depth', 'None')), 
+                       help="Maximum tree depth")
+    parser.add_argument("--min-samples-split", type=int,
+                       default=train_params.get('min_samples_split', 2),
+                       help="Minimum samples required to split an internal node")
+    parser.add_argument("--min-samples-leaf", type=int,
+                       default=train_params.get('min_samples_leaf', 1),
+                       help="Minimum samples required to be at a leaf node")
+    parser.add_argument("--max-features", type=str,
+                       default=str(train_params.get('max_features', 'sqrt')),
+                       help="Number of features to consider for best split")
+    parser.add_argument("--bootstrap", type=bool,
+                       default=train_params.get('bootstrap', True),
+                       help="Whether bootstrap samples are used when building trees")
+    parser.add_argument("--random-state", type=int, 
+                       default=train_params.get('random_state', 42), 
+                       help="Random state")
+    parser.add_argument("--n-jobs", type=int,
+                       default=train_params.get('n_jobs', -1),
+                       help="Number of jobs to run in parallel")
     
     args = parser.parse_args()
+    
+    # Handle max_depth conversion
+    max_depth = None if args.max_depth in ['None', 'null', 'none'] else int(args.max_depth)
+    
+    print(f"Using parameters from params.yaml and command line:")
+    print(f"  n_estimators: {args.n_estimators}")
+    print(f"  max_depth: {max_depth}")
+    print(f"  min_samples_split: {args.min_samples_split}")
+    print(f"  min_samples_leaf: {args.min_samples_leaf}")
+    print(f"  max_features: {args.max_features}")
+    print(f"  bootstrap: {args.bootstrap}")
+    print(f"  random_state: {args.random_state}")
+    print(f"  n_jobs: {args.n_jobs}")
     
     train_model(
         train_path=args.train,
         test_path=args.test,
         output_dir=args.output,
         n_estimators=args.n_estimators,
-        max_depth=args.max_depth,
-        random_state=args.random_state
+        max_depth=max_depth,
+        min_samples_split=args.min_samples_split,
+        min_samples_leaf=args.min_samples_leaf,
+        max_features=args.max_features,
+        bootstrap=args.bootstrap,
+        random_state=args.random_state,
+        n_jobs=args.n_jobs,
+        pos_label=train_params.get('pos_label', 'M'),
+        use_feature_scaling=train_params.get('use_feature_scaling', True),
+        top_features_to_plot=train_params.get('top_features_to_plot', 20),
+        viz_config=viz_config
     ) 
