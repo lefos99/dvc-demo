@@ -43,11 +43,9 @@ stages:
     cmd: >-
       python code/train_model.py 
       --train data/processed/train.csv 
-      --test data/processed/test.csv 
       --output data/model
     deps:
     - data/processed/train.csv
-    - data/processed/test.csv
     - code/train_model.py
     params:
     - train_model.n_estimators

@@ -27,7 +27,7 @@ def load_params():
         return {}
 
 
-def train_model(train_path, test_path, output_dir, n_estimators=100, max_depth=None, 
+def train_model(train_path, output_dir, n_estimators=100, max_depth=None, 
                 min_samples_split=2, min_samples_leaf=1, max_features='sqrt', 
                 bootstrap=True, random_state=42, n_jobs=-1, pos_label='M',
                 use_feature_scaling=True):
@@ -36,7 +36,6 @@ def train_model(train_path, test_path, output_dir, n_estimators=100, max_depth=N
     
     Args:
         train_path (str): Path to training data CSV
-        test_path (str): Path to test data CSV (used for feature consistency)
         output_dir (str): Directory to save model and results
         n_estimators (int): Number of trees in the forest
         max_depth (int): Maximum depth of the trees
@@ -55,11 +54,8 @@ def train_model(train_path, test_path, output_dir, n_estimators=100, max_depth=N
     # Load data
     print(f"Loading training data from {train_path}")
     train_df = pd.read_csv(train_path)
-    print(f"Loading test data from {test_path}")
-    test_df = pd.read_csv(test_path)
     
     print(f"Training data shape: {train_df.shape}")
-    print(f"Test data shape: {test_df.shape}")
     
     # Prepare features and targets
     feature_cols = [col for col in train_df.columns if col not in ['id', 'diagnosis']]
@@ -175,7 +171,6 @@ if __name__ == "__main__":
     
     parser = argparse.ArgumentParser(description="Train Random Forest model")
     parser.add_argument("--train", required=True, help="Training data CSV file path")
-    parser.add_argument("--test", required=True, help="Test data CSV file path")
     parser.add_argument("--output", required=True, help="Output directory for model and results")
     
     args = parser.parse_args()
@@ -206,7 +201,6 @@ if __name__ == "__main__":
     
     train_model(
         train_path=args.train,
-        test_path=args.test,
         output_dir=args.output,
         n_estimators=n_estimators,
         max_depth=max_depth,
