@@ -145,17 +145,12 @@ stages:
       md5: 939a825f209e6bad35508e5e8e0792bd
       size: 1895
   train_model:
-    cmd: python code/train_model.py  --train data/processed/train.csv  --test data/processed/test.csv  --output
-      data/model
+    cmd: python code/train_model.py  --train data/processed/train.csv  --output data/model
     deps:
     - path: code/train_model.py
       hash: md5
-      md5: 52efa787992b0fe6ac0d8babac08ab98
-      size: 8180
-    - path: data/processed/test.csv
-      hash: md5
-      md5: d5817f45d1fdcf02bf623853576b561d
-      size: 25527
+      md5: 6864c24657e8ff778d31648aa066dc35
+      size: 7850
     - path: data/processed/train.csv
       hash: md5
       md5: 12b24aa87cd748c7f2dbac58444e2181
