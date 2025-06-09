@@ -14,31 +14,6 @@ stages:
     - data/processed/train.csv
     - data/processed/test.csv
 
-  compute_data_statistics:
-    foreach:
-      - train
-      - test
-    do:
-      cmd: >-
-        python code/data_statistics.py 
-        --train data/processed/${item}.csv 
-        --output data/processed/statistics/${item}
-      deps:
-      - data/processed/${item}.csv
-      - code/data_statistics.py
-      params:
-      - data_statistics.important_features
-      - data_statistics.pairplot_features
-      - data_statistics.top_variance_features
-      outs:
-      - data/processed/statistics/${item}/statistics.json
-      - data/processed/statistics/${item}/class_distribution.png
-      - data/processed/statistics/${item}/correlation_heatmap.png
-      - data/processed/statistics/${item}/feature_distributions.png
-      - data/processed/statistics/${item}/pairplot_key_features.png
-      - data/processed/statistics/${item}/feature_variance.png
-      - data/processed/statistics/${item}/summary_statistics.csv
-
   train_model:
     cmd: >-
       python code/train_model.py 
