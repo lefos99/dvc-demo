@@ -100,7 +100,7 @@ def train_model(train_path, output_dir, n_estimators=100, max_depth=None,
         bootstrap=bootstrap,
         random_state=random_state,
         n_jobs=n_jobs,
-        # criterion='gini'
+        # criterion='entropy'
     )
     
     rf_model.fit(X_train_scaled, y_train)
