@@ -118,8 +118,7 @@ def generate_statistics(train_path, output_dir):
     ax2.pie(class_dist.values, labels=class_dist.index, autopct='%1.1f%%', startangle=90)
     ax2.set_title('Class Distribution (Percentage)')
     
-    plt.tight_layout()
-    plt.savefig(os.path.join(output_dir, 'class_distribution.png'), dpi=dpi, bbox_inches='tight')
+    plt.savefig(os.path.join(output_dir, 'class_distribution.png'), dpi=dpi)
     plt.close()
     
     # 2. Feature correlation heatmap
@@ -133,7 +132,7 @@ def generate_statistics(train_path, output_dir):
                    center=0,
                    figsize=fig_size_large,
                    dendrogram_ratio=0.1)
-    plt.savefig(os.path.join(output_dir, 'correlation_heatmap.png'), dpi=dpi, bbox_inches='tight')
+    plt.savefig(os.path.join(output_dir, 'correlation_heatmap.png'), dpi=dpi)
     plt.close()
     
     # 3. Feature distributions by diagnosis
@@ -164,8 +163,7 @@ def generate_statistics(train_path, output_dir):
     for i in range(n_features, len(axes)):
         axes[i].set_visible(False)
     
-    plt.tight_layout()
-    plt.savefig(os.path.join(output_dir, 'feature_distributions.png'), dpi=dpi, bbox_inches='tight')
+    plt.savefig(os.path.join(output_dir, 'feature_distributions.png'), dpi=dpi)
     plt.close()
     
     # 4. Pairplot for key features
@@ -175,7 +173,7 @@ def generate_statistics(train_path, output_dir):
         
         plt.figure(figsize=fig_size_medium)
         pairplot = sns.pairplot(df[key_features], hue='diagnosis', diag_kind='hist')
-        pairplot.savefig(os.path.join(output_dir, 'pairplot_key_features.png'), dpi=dpi, bbox_inches='tight')
+        pairplot.savefig(os.path.join(output_dir, 'pairplot_key_features.png'), dpi=dpi)
         plt.close()
     
     # 5. Feature importance through variance
@@ -188,8 +186,7 @@ def generate_statistics(train_path, output_dir):
     plt.xlabel('Variance')
     plt.title(f'Top {top_variance_features} Features by Variance')
     plt.gca().invert_yaxis()
-    plt.tight_layout()
-    plt.savefig(os.path.join(output_dir, 'feature_variance.png'), dpi=dpi, bbox_inches='tight')
+    plt.savefig(os.path.join(output_dir, 'feature_variance.png'), dpi=dpi)
     plt.close()
     
     # 6. Missing values analysis
@@ -201,8 +198,7 @@ def generate_statistics(train_path, output_dir):
         plt.xlabel('Features')
         plt.ylabel('Missing Count')
         plt.xticks(rotation=45)
-        plt.tight_layout()
-        plt.savefig(os.path.join(output_dir, 'missing_values.png'), dpi=dpi, bbox_inches='tight')
+        plt.savefig(os.path.join(output_dir, 'missing_values.png'), dpi=dpi)
         plt.close()
     else:
         print("No missing values found in the dataset")
@@ -216,14 +212,6 @@ def generate_statistics(train_path, output_dir):
         summary_stats.to_csv(os.path.join(output_dir, 'summary_statistics.csv'))
     
     print(f"Generated plots and statistics in {output_dir}")
-    print(f"Files created:")
-    print(f"  - statistics.json")
-    print(f"  - class_distribution.png")
-    print(f"  - correlation_heatmap.png")
-    print(f"  - feature_distributions.png")
-    print(f"  - pairplot_key_features.png")
-    print(f"  - feature_variance.png")
-    print(f"  - summary_statistics.csv")
     
     return stats
 

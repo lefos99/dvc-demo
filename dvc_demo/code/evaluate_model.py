@@ -136,7 +136,7 @@ def evaluate_model(model_path, scaler_path, test_path, output_dir, pos_label='M'
     plt.title('Confusion Matrix')
     plt.xlabel('Predicted')
     plt.ylabel('Actual')
-    plt.savefig(os.path.join(output_dir, 'confusion_matrix.png'), dpi=300, bbox_inches='tight')
+    plt.savefig(os.path.join(output_dir, 'confusion_matrix.png'), dpi=300)
     plt.close()
     
     # 2. ROC Curve
@@ -155,7 +155,7 @@ def evaluate_model(model_path, scaler_path, test_path, output_dir, pos_label='M'
     plt.ylabel('True Positive Rate')
     plt.title('Receiver Operating Characteristic (ROC) Curve')
     plt.legend(loc="lower right")
-    plt.savefig(os.path.join(output_dir, 'roc_curve.png'), dpi=300, bbox_inches='tight')
+    plt.savefig(os.path.join(output_dir, 'roc_curve.png'), dpi=300)
     plt.close()
     
     # 3. Feature Importance
@@ -178,8 +178,7 @@ def evaluate_model(model_path, scaler_path, test_path, output_dir, pos_label='M'
         plt.xlabel('Feature Importance')
         plt.title(f'Top {top_features_to_plot} Most Important Features')
         plt.gca().invert_yaxis()
-        plt.tight_layout()
-        plt.savefig(os.path.join(output_dir, 'feature_importance.png'), dpi=300, bbox_inches='tight')
+        plt.savefig(os.path.join(output_dir, 'feature_importance.png'), dpi=300)
         plt.close()
     else:
         print("Model does not support feature importances")
@@ -208,8 +207,7 @@ def evaluate_model(model_path, scaler_path, test_path, output_dir, pos_label='M'
     plt.ylabel('Frequency')
     plt.title('Distribution of Model Confidence')
     
-    plt.tight_layout()
-    plt.savefig(os.path.join(output_dir, 'prediction_analysis.png'), dpi=300, bbox_inches='tight')
+    plt.savefig(os.path.join(output_dir, 'prediction_analysis.png'), dpi=300)
     plt.close()
     
     print(f"\nModel evaluation completed!")

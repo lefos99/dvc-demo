@@ -77,10 +77,6 @@ def split_data(input_path, output_dir, test_size=0.2, random_state=42):
     
     print(f"Train set saved to {train_path}: {train_df.shape}")
     print(f"Test set saved to {test_path}: {test_df.shape}")
-    
-    print(f"Train diagnosis distribution:\n{train_df['diagnosis'].value_counts()}")
-    print(f"Test diagnosis distribution:\n{test_df['diagnosis'].value_counts()}")
-
 
 if __name__ == "__main__":
     # Load parameters from params.yaml
@@ -97,7 +93,7 @@ if __name__ == "__main__":
     test_size = split_params.get('test_size', 0.2)
     random_state = split_params.get('random_state', 42)
     
-    print(f"Using parameters from params.yaml:")
+    print("Using parameters from params.yaml:")
     print(f"  Test size: {test_size}")
     print(f"  Random state: {random_state}")
     
