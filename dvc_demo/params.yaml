@@ -5,27 +5,6 @@ split_data:
   test_size: 0.2
   random_state: 42
 
-data_statistics:
-  important_features:
-    - "radius_mean"
-    - "texture_mean"
-    - "perimeter_mean"
-    - "area_mean"
-    - "smoothness_mean"
-    - "compactness_mean"
-    - "concavity_mean"
-    - "concave points_mean"
-    - "symmetry_mean"
-    - "fractal_dimension_mean"
-  
-  pairplot_features:
-    - "radius_mean"
-    - "texture_mean"
-    - "perimeter_mean"
-    - "area_mean"
-  
-  top_variance_features: 20
-
 train_model:
   # Random Forest hyperparameters
   n_estimators: 1          # Number of trees in the forest
