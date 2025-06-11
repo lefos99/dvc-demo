@@ -1,0 +1,114 @@
+schema: '2.0'
+stages:
+  split_data:
+    cmd: python code/split_data.py  --input data/raw/data.csv  --output data/processed
+    deps:
+    - path: code/split_data.py
+      hash: md5
+      md5: c7d0599909b552e0a1fa2bb15f1a53a4
+      size: 3122
+    - path: data/raw/data.csv
+      hash: md5
+      md5: 2e145752c5e9df5fe367d25b6a9d9179
+      size: 124571
+    params:
+      params.yaml:
+        split_data.random_state: 42
+        split_data.test_size: 0.2
+    outs:
+    - path: data/processed/test.csv
+      hash: md5
+      md5: d5817f45d1fdcf02bf623853576b561d
+      size: 25527
+    - path: data/processed/train.csv
+      hash: md5
+      md5: 12b24aa87cd748c7f2dbac58444e2181
+      size: 100516
+  train_model:
+    cmd: python code/train_model.py  --train data/processed/train.csv  --output data/model
+    deps:
+    - path: code/train_model.py
+      hash: md5
+      md5: a33e220a4bba756c254c0647106e1af3
+      size: 7853
+    - path: data/processed/train.csv
+      hash: md5
+      md5: 12b24aa87cd748c7f2dbac58444e2181
+      size: 100516
+    params:
+      params.yaml:
+        train_model.bootstrap: true
+        train_model.max_depth: 1
+        train_model.max_features: sqrt
+        train_model.min_samples_leaf: 1
+        train_model.min_samples_split: 2
+        train_model.n_estimators: 1
+        train_model.pos_label: M
+        train_model.random_state: 42
+        train_model.use_feature_scaling: true
+    outs:
+    - path: data/model/feature_importance.csv
+      hash: md5
+      md5: fe646f526d3b2d419cc2288d460e65df
+      size: 594
+    - path: data/model/random_forest_model.joblib
+      hash: md5
+      md5: c136bab0774ed786256c5712d49f7fab
+      size: 2201
+    - path: data/model/scaler.joblib
+      hash: md5
+      md5: fa891da44b3e8949834ec6d4e61c8ae3
+      size: 2087
+    - path: data/model/training_info.json
+      hash: md5
+      md5: 6bce57751c821fd21c1e793c80586947
+      size: 1136
+  evaluate_model:
+    cmd: python code/evaluate_model.py  --model data/model/random_forest_model.joblib
+      --scaler data/model/scaler.joblib --test data/processed/test.csv  --output data/model/evaluation
+    deps:
+    - path: code/evaluate_model.py
+      hash: md5
+      md5: ee76bdbc769489bfb4883e14c8949659
+      size: 9545
+    - path: data/model/random_forest_model.joblib
+      hash: md5
+      md5: c136bab0774ed786256c5712d49f7fab
+      size: 2201
+    - path: data/model/scaler.joblib
+      hash: md5
+      md5: fa891da44b3e8949834ec6d4e61c8ae3
+      size: 2087
+    - path: data/processed/test.csv
+      hash: md5
+      md5: d5817f45d1fdcf02bf623853576b561d
+      size: 25527
+    params:
+      params.yaml:
+        evaluate_model.pos_label: M
+        evaluate_model.top_features_to_plot: 20
+    outs:
+    - path: data/model/evaluation/confusion_matrix.png
+      hash: md5
+      md5: f17dff15e76afa96d697ef3f943b41e7
+      size: 77535
+    - path: data/model/evaluation/feature_importance.csv
+      hash: md5
+      md5: fe646f526d3b2d419cc2288d460e65df
+      size: 594
+    - path: data/model/evaluation/feature_importance.png
+      hash: md5
+      md5: d8b7d813483680797fb4a7c48a18dab3
+      size: 222562
+    - path: data/model/evaluation/metrics.json
+      hash: md5
+      md5: d862d39b0496a0822932e188862f75ec
+      size: 257
+    - path: data/model/evaluation/prediction_analysis.png
+      hash: md5
+      md5: 4bca2710daf15bf4747876df1c65f7a6
+      size: 132521
+    - path: data/model/evaluation/roc_curve.png
+      hash: md5
+      md5: d921c3f4bd26653d605e5d6294e20c78
+      size: 151356
