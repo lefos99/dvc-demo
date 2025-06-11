@@ -19,56 +19,74 @@ The pipeline predicts breast cancer diagnosis (Benign/Malignant) using cell nucl
 dvc-demo/
 ├── dvc_demo/
 │   ├── data/
-│   │   ├── data.csv              # Original dataset
-│   │   ├── data.csv.dvc          # DVC tracking file
-│   │   └── processed/            # Train/test splits (generated)
-│   ├── code/                     # Source code
-│   │   ├── split_data.py         # Data splitting script
-│   │   ├── data_statistics.py    # Statistical analysis script
-│   │   └── train_model.py        # Model training script
-│   ├── reports/                  # Generated reports (created by pipeline)
-│   │   └── statistics/           # Data analysis outputs
-│   └── models/                   # Trained models (created by pipeline)
-├── dvc.yaml                      # DVC pipeline definition
-├── requirements.txt              # Python dependencies
-├── README.md                     # This file
-└── .dvc/                         # DVC configuration
+│   │   ├── raw/
+│   │   │   ├── data.csv              # Original dataset
+│   │   │   └── data.csv.dvc          # DVC tracking file
+│   │   ├── processed/                # Train/test splits (generated)
+│   │   │   ├── train.csv             # Training data
+│   │   │   └── test.csv              # Test data
+│   │   └── model/                    # Model artifacts and evaluation outputs
+│   │       ├── random_forest_model.joblib  # Trained model
+│   │       ├── scaler.joblib         # Feature scaler
+│   │       ├── feature_importance.csv      # Feature importance rankings
+│   │       ├── training_info.json    # Training metadata
+│   │       └── evaluation/           # Model evaluation outputs
+│   │           ├── confusion_matrix.png    # Confusion matrix visualization
+│   │           ├── roc_curve.png     # ROC curve analysis
+│   │           ├── feature_importance.png  # Feature importance plot
+│   │           ├── prediction_analysis.png # Prediction distribution analysis
+│   │           ├── feature_importance.csv  # Feature importance rankings
+│   │           └── metrics.json      # Performance metrics
+│   ├── code/                         # Source code
+│   │   ├── split_data.py             # Data splitting script
+│   │   ├── train_model.py            # Model training script
+│   │   └── evaluate_model.py         # Model evaluation script
+│   ├── dvc.yaml                      # DVC pipeline definition
+│   ├── params.yaml                   # Pipeline parameters configuration
+│   └── dvc.lock                      # DVC lock file (auto-generated)
+├── requirements.txt                  # Python dependencies
+├── README.md                         # This file
+├── .gitignore                        # Git ignore patterns
+├── .dvcignore                        # DVC ignore patterns
+└── .dvc/                             # DVC configuration
 ```
 
 ## 🚀 DVC Pipeline Stages
 
 ### Stage 1: Data Splitting (`split_data`)
-- **Input**: Original dataset (`dvc_demo/data/data.csv`)
+- **Input**: Original dataset (`dvc_demo/data/raw/data.csv`)
 - **Output**: Train/test splits with stratification
+- **Configuration**: Controlled via `params.yaml`
 - **Features**:
-  - 80/20 train/test split
+  - 80/20 train/test split (configurable)
   - Stratified sampling to maintain class balance
   - Reproducible with fixed random seed
 
-### Stage 2: Data Statistics (`data_statistics`)
-- **Input**: Training data
-- **Output**: Comprehensive statistical analysis and visualizations
+### Stage 2: Model Training (`train_model`)
+- **Input**: Training data (`dvc_demo/data/processed/train.csv`)
+- **Output**: Trained Random Forest model and related artifacts
+- **Configuration**: Hyperparameters defined in `params.yaml`
 - **Generated Files**:
-  - `statistics.json`: Numerical statistics
-  - `class_distribution.png`: Class balance visualization
-  - `correlation_heatmap.png`: Feature correlation analysis
-  - `feature_distributions.png`: Feature distributions by diagnosis
-  - `pairplot_key_features.png`: Pairwise feature relationships
-  - `feature_variance.png`: Feature variance ranking
-  - `summary_statistics.csv`: Statistical summary by class
-
-### Stage 3: Model Training (`train_model`)
-- **Input**: Train/test splits
-- **Output**: Trained Random Forest model and evaluation metrics
-- **Generated Files**:
-  - `random_forest_model.joblib`: Trained model
-  - `scaler.joblib`: Feature scaler
-  - `metrics.json`: Performance metrics
+  - `random_forest_model.joblib`: Trained Random Forest model
+  - `scaler.joblib`: Feature scaler (StandardScaler)
   - `feature_importance.csv`: Feature importance rankings
+  - `training_info.json`: Training metadata and configuration
+
+### Stage 3: Model Evaluation (`evaluate_model`)
+- **Input**: Trained model, scaler, and test data
+- **Output**: Comprehensive evaluation metrics and visualizations
+- **Configuration**: Evaluation parameters in `params.yaml`
+- **Generated Files**:
+  - `metrics.json`: Performance metrics (accuracy, precision, recall, F1, ROC-AUC)
   - `confusion_matrix.png`: Confusion matrix visualization
   - `roc_curve.png`: ROC curve analysis
   - `feature_importance.png`: Feature importance plot
   - `prediction_analysis.png`: Prediction distribution analysis
+  - `feature_importance.csv`: Feature importance rankings
+
+## ⚙️ Configuration Management
+
+The pipeline uses a centralized `params.yaml` file for parameter management.
 
 ## 🛠️ Setup and Installation
 
@@ -84,10 +102,10 @@ dvc-demo/
    cd dvc-demo
    ```
 
-2. **Create a virtual environment** (optional):
+2. **Create a virtual environment** (recommended):
    ```bash
    python -m venv venv
-   source venv/bin/activate
+   source venv/bin/activate  # On Windows: venv\Scripts\activate
    ```
 
 3. **Install dependencies**:
@@ -104,29 +122,30 @@ dvc-demo/
 
 ### Execute the Complete Pipeline
 ```bash
-dvc repro
+cd dvc_demo
+dvc exp run
 ```
 
 This command will:
-1. Check for changes in dependencies
+1. Check for changes in dependencies and parameters
 2. Run only the stages that need to be updated
 3. Generate all outputs in the correct order
 
 ### Run Individual Stages
 ```bash
 # Run only data splitting
-dvc repro split_data
-
-# Run only statistics generation
-dvc repro data_statistics
+dvc exp run split_data
 
 # Run only model training
-dvc repro train_model
+dvc exp run train_model
+
+# Run only model evaluation
+dvc exp run evaluate_model
 ```
 
 ### Force Re-run All Stages
 ```bash
-dvc repro --force
+dvc exp run --force
 ```
 
 ## 📊 Viewing Results
@@ -138,31 +157,41 @@ dvc status
 
 ### View Metrics
 ```bash
-dvc metrics show
+dvc exp show
 ```
 
-### Compare Experiments (if you modify parameters)
+### Compare Experiments (after parameter changes)
 ```bash
 dvc metrics diff
 ```
 
-### Visualize Pipeline
+### Visualize Pipeline DAG
 ```bash
 dvc dag
 ```
 
 ## 🔧 Experimenting with Parameters
 
-You can easily experiment with different model parameters by modifying the `dvc.yaml` file:
+You can easily experiment with different parameters by modifying the `params.yaml` file:
 
 ```yaml
 train_model:
-  cmd: python dvc_demo/code/train_model.py --train ... --n-estimators 200 --max-depth 10
+  n_estimators: 200     # Increase number of trees
+  max_depth: 10         # Limit tree depth
+  min_samples_split: 5  # Require more samples to split
 ```
 
-Or run experiments directly:
+After modifying parameters, simply run:
 ```bash
-dvc exp run -S train_model.cmd="python dvc_demo/code/train_model.py --train dvc_demo/data/processed/train.csv --test dvc_demo/data/processed/test.csv --output dvc_demo/models --n-estimators 200 --max-depth 10 --random-state 42"
+dvc exp run -n new_experiment
+```
+
+DVC will automatically detect the parameter changes and re-run the affected stages.
+
+### Alternative: Command-line Experiments
+```bash
+# Run an experiment with different parameters
+dvc exp run -S train_model.n_estimators=200 -S train_model.max_depth=10
 ```
 
 ## 📈 Key DVC Features Demonstrated
@@ -177,20 +206,26 @@ dvc exp run -S train_model.cmd="python dvc_demo/code/train_model.py --train dvc_
 - Automatic dependency tracking
 - Incremental execution (only runs changed stages)
 
-### 3. **Experiment Tracking**
-- Metrics are automatically tracked
+### 3. **Parameter Management**
+- Centralized parameter configuration in `params.yaml`
+- Automatic detection of parameter changes
+- Easy experimentation and comparison
+
+### 4. **Experiment Tracking**
+- Metrics are automatically tracked in `metrics.json`
 - Easy comparison between experiments
 - Reproducible results with version control
 
-### 4. **Artifacts Management**
-- Models, plots, and reports are versioned
+### 5. **Artifacts Management**
+- Models, plots, and evaluation results are versioned
 - Large files are efficiently stored
 - Easy sharing and collaboration
 
-### 5. **Reproducibility**
+### 6. **Reproducibility**
 - Fixed random seeds ensure reproducible results
 - Dependencies are explicitly tracked
-- Environment is captured in requirements.txt
+- Environment captured in `requirements.txt`
+- Parameters version-controlled in `params.yaml`
 
 ## 🎯 Expected Results
 
@@ -209,7 +244,7 @@ Key insights from the analysis:
 ### Track Changes with Git
 ```bash
 # Add DVC files to git
-git add dvc.yaml dvc_demo/data/data.csv.dvc requirements.txt README.md
+git add dvc_demo/dvc.yaml dvc_demo/params.yaml dvc_demo/data/raw/data.csv.dvc requirements.txt README.md
 
 # Commit the pipeline
 git commit -m "Add breast cancer classification pipeline"
@@ -224,17 +259,9 @@ git push origin main
 git clone <repository-url>
 cd dvc-demo
 pip install -r requirements.txt
-dvc repro
+cd dvc_demo
+dvc exp run
 ```
-
-## 🤝 Contributing
-
-To extend this demo:
-
-1. **Add new stages**: Modify `dvc.yaml` to include preprocessing, feature selection, or model evaluation stages
-2. **Try different algorithms**: Modify `train_model.py` to use SVM, XGBoost, or neural networks
-3. **Add hyperparameter tuning**: Integrate grid search or Bayesian optimization
-4. **Include model validation**: Add cross-validation and statistical testing
 
 ## 📚 Learn More
 
