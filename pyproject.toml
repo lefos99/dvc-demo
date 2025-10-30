@@ -1,0 +1,15 @@
+[project]
+name = "dvc-demo"
+version = "0.1.0"
+description = "DVC Demo: Breast Cancer Classification Pipeline"
+requires-python = ">=3.10"
+dependencies = [
+    "dvc>=3.59.2",
+    "pandas>=2.0.3",
+    "scikit-learn>=1.3.0",
+    "matplotlib>=3.7.2",
+    "seaborn>=0.12.2",
+    "numpy>=1.24.3",
+    "PyYAML>=6.0",
+]
+

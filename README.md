@@ -44,7 +44,7 @@ dvc-demo/
 │   ├── dvc.yaml                      # DVC pipeline definition
 │   ├── params.yaml                   # Pipeline parameters configuration
 │   └── dvc.lock                      # DVC lock file (auto-generated)
-├── requirements.txt                  # Python dependencies
+├── pyproject.toml                   # Python project configuration (uv)
 ├── README.md                         # This file
 ├── .gitignore                        # Git ignore patterns
 ├── .dvcignore                        # DVC ignore patterns
@@ -91,8 +91,9 @@ The pipeline uses a centralized `params.yaml` file for parameter management.
 ## 🛠️ Setup and Installation
 
 ### Prerequisites
-- Python 3.8+
+- Python 3.10+
 - Git
+- [uv](https://github.com/astral-sh/uv) (install via `curl -LsSf https://astral.sh/uv/install.sh | sh`)
 
 ### Installation Steps
 
@@ -102,20 +103,10 @@ The pipeline uses a centralized `params.yaml` file for parameter management.
    cd dvc-demo
    ```
 
-2. **Create a virtual environment** (recommended):
+2. **Use uv to create a virtual environment and install dependencies**:
    ```bash
-   python -m venv venv
-   source venv/bin/activate  # On Windows: venv\Scripts\activate
-   ```
-
-3. **Install dependencies**:
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-4. **Initialize DVC** (if not already done):
-   ```bash
-   dvc init
+   uv sync --frozen
+   source .venv/bin/activate
    ```
 
 ## 🎮 Running the Pipeline
@@ -224,7 +215,7 @@ dvc exp run -S train_model.n_estimators=200 -S train_model.max_depth=10
 ### 6. **Reproducibility**
 - Fixed random seeds ensure reproducible results
 - Dependencies are explicitly tracked
-- Environment captured in `requirements.txt`
+- Environment captured in `pyproject.toml`
 - Parameters version-controlled in `params.yaml`
 
 ## 🎯 Expected Results
@@ -244,7 +235,7 @@ Key insights from the analysis:
 ### Track Changes with Git
 ```bash
 # Add DVC files to git
-git add dvc_demo/dvc.yaml dvc_demo/params.yaml dvc_demo/data/raw/data.csv.dvc requirements.txt README.md
+git add dvc_demo/dvc.yaml dvc_demo/params.yaml dvc_demo/data/raw/data.csv.dvc pyproject.toml README.md
 
 # Commit the pipeline
 git commit -m "Add breast cancer classification pipeline"
@@ -258,7 +249,7 @@ git push origin main
 # Others can reproduce by:
 git clone <repository-url>
 cd dvc-demo
-pip install -r requirements.txt
+uv sync --frozen
 cd dvc_demo
 dvc exp run
 ```
