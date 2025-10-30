@@ -20,8 +20,7 @@ dvc-demo/
 ├── dvc_demo/
 │   ├── data/
 │   │   ├── raw/
-│   │   │   ├── data.csv              # Original dataset
-│   │   │   └── data.csv.dvc          # DVC tracking file
+│   │   │   └── data.csv              # Original dataset (tracked in Git)
 │   │   ├── processed/                # Train/test splits (generated)
 │   │   │   ├── train.csv             # Training data
 │   │   │   └── test.csv              # Test data
@@ -188,9 +187,10 @@ dvc exp run -S train_model.n_estimators=200 -S train_model.max_depth=10
 ## 📈 Key DVC Features Demonstrated
 
 ### 1. **Data Versioning**
-- Original dataset is tracked with `dvc add`
-- Changes to data are automatically detected
+- Original dataset is tracked directly in Git
+- Changes to data are automatically detected by DVC
 - Data integrity is maintained with checksums
+- DVC tracks data dependencies in the pipeline
 
 ### 2. **Pipeline Management**
 - Declarative pipeline definition in `dvc.yaml`
@@ -235,7 +235,7 @@ Key insights from the analysis:
 ### Track Changes with Git
 ```bash
 # Add DVC files to git
-git add dvc_demo/dvc.yaml dvc_demo/params.yaml dvc_demo/data/raw/data.csv.dvc pyproject.toml README.md
+git add dvc_demo/dvc.yaml dvc_demo/params.yaml dvc_demo/data/raw/data.csv pyproject.toml uv.lock README.md
 
 # Commit the pipeline
 git commit -m "Add breast cancer classification pipeline"
