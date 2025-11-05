@@ -6,8 +6,8 @@ stages:
     deps:
     - path: code/split_data.py
       hash: md5
-      md5: c7d0599909b552e0a1fa2bb15f1a53a4
-      size: 3122
+      md5: 33ba7015a15840d441486729bd90a2d1
+      size: 2959
     - path: data/raw/data.csv
       hash: md5
       md5: 6165d90b8708bb1c1dd14245cc6bef46
@@ -31,8 +31,8 @@ stages:
     deps:
     - path: code/train_model.py
       hash: md5
-      md5: a33e220a4bba756c254c0647106e1af3
-      size: 7853
+      md5: 8131a9c634332ff14dc92854b475ee67
+      size: 7733
     - path: data/processed/train.csv
       hash: md5
       md5: d4e69b09f9439b8a45dfbe19dcb646cc
@@ -72,8 +72,8 @@ stages:
     deps:
     - path: code/evaluate_model.py
       hash: md5
-      md5: ee76bdbc769489bfb4883e14c8949659
-      size: 9545
+      md5: b5f65d36f9df8ef36d07875e1f675309
+      size: 9557
     - path: data/model/random_forest_model.joblib
       hash: md5
       md5: d37e2806fe3f792ed0fbe6285580f67b
